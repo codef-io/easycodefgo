@@ -1,6 +1,6 @@
 package easycodefgo
 
-type ServiceCode int
+type ServiceStatus int
 
 const (
 	OAuthDomain         = "https://oauth.codef.io"               // OAUTH 서버 도메인
@@ -11,12 +11,12 @@ const (
 	DemoDomain          = "https://development.codef.io"         // 데모 서버 도메인
 	APIDomain           = "https://api.codef.io"                 // 정식 서버 도메인
 
-	CreateAccount  = "/v1/account/create"           // 계정 등록 URL
-	AddAccount     = "/v1/account/add"              // 계정 추가 URL
-	UpdateAccount  = "/v1/account/update"           // 계정 수정 URL
-	DeleteAccount  = "/v1/account/delete"           // 계정 삭제 URL
-	GetAccountList = "/v1/account/list"             // 계정 목록 조회 URL
-	GetCIDList     = "/v1/account/connectedId-list" // 커넥티드 아이디 목록 조회 URL
+	PathCreateAccount  = "/v1/account/create"           // 계정 등록 URL
+	PathAddAccount     = "/v1/account/add"              // 계정 추가 URL
+	PathUpdateAccount  = "/v1/account/update"           // 계정 수정 URL
+	PathDeleteAccount  = "/v1/account/delete"           // 계정 삭제 URL
+	PathGetAccountList = "/v1/account/list"             // 계정 목록 조회 URL
+	PathGetCIDList     = "/v1/account/connectedId-list" // 커넥티드 아이디 목록 조회 URL
 
 	Result       = "result"       // 응답부 수행 결과 키워드
 	Code         = "code"         // 응답부 수행 결과 메시지 코드 키워드
@@ -31,9 +31,9 @@ const (
 )
 
 const (
-	StatusProduct ServiceCode = iota // 정식버전
-	StatusDemo                       // 데모 버전
-	StatusSandbox                    // 샌드박스
+	StatusProduct ServiceStatus = iota // 정식버전
+	StatusDemo                         // 데모 버전
+	StatusSandbox                      // 샌드박스
 )
 
 var (

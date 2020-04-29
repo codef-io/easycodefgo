@@ -6,23 +6,30 @@ type EasyCodef struct {
 // 상품 요청
 func RequestProduct(
 	productURL string,
-	serviceType ServiceCode,
-	parameter map[string]string,
+	serviceType ServiceStatus,
+	parameter map[string]interface{},
 ) string {
 	ProductURL = productURL
 	ServiceType = serviceType
 
 	validFlag := true
+	// 클라이언트 정보 체크
 	validFlag = checkClientInfo(ServiceType)
 	if !validFlag {
 		return "false"
 	}
 
-	return "he"
+	// 퍼블릭 키 체크
+	validFlag = checkPublicKey()
+	if !validFlag {
+		return ""
+	}
+
+	return ""
 }
 
 // 클라이언트 정보 검사
-func checkClientInfo(serviceType ServiceCode) bool {
+func checkClientInfo(serviceType ServiceStatus) bool {
 	switch serviceType {
 	case StatusProduct:
 		if TrimAll(ClientID) == "" || TrimAll(ClientSecret) == "" {
@@ -37,6 +44,18 @@ func checkClientInfo(serviceType ServiceCode) bool {
 			return false
 		}
 		break
+	}
+	return true
+}
+
+func AddAccount(serviceType ServiceStatus, param map[string]interface{}) string {
+	return RequestProduct(PathAddAccount, serviceType, param)
+}
+
+// 퍼블릭키 정보 설정 확인
+func checkPublicKey() bool {
+	if TrimAll(PublicKey) == "" {
+		return false
 	}
 	return true
 }
