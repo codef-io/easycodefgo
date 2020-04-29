@@ -40,7 +40,7 @@ func checkClientInfo(serviceType ServiceStatus) bool {
 			return false
 		}
 	case StatusDemo:
-		if TrimAll(DemoClientSecret) == "" || TrimAll(DemoClientSecret) == "" {
+		if TrimAll(DemoClientID) == "" || TrimAll(DemoClientSecret) == "" {
 			return false
 		}
 	default:
