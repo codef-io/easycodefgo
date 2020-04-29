@@ -1,5 +1,7 @@
 package easycodefgo
 
+import msg "github.com/dc7303/easycodefgo/message"
+
 type EasyCodef struct {
 }
 
@@ -16,13 +18,15 @@ func RequestProduct(
 	// 클라이언트 정보 체크
 	validFlag = checkClientInfo(ServiceType)
 	if !validFlag {
-		return "false"
+		res := NewResponse(msg.EmptyClientInfo)
+		return res.WriteValueAsString()
 	}
 
 	// 퍼블릭 키 체크
 	validFlag = checkPublicKey()
 	if !validFlag {
-		return ""
+		res := NewResponse(msg.EmptyPublicKey)
+		return res.WriteValueAsString()
 	}
 
 	return ""
