@@ -37,3 +37,23 @@ func TestCheckPublicKey(t *testing.T) {
 
 	PublicKey = ""
 }
+
+// 2Way 키워드 존재 여부 확인
+func TestCheckTwoWayKeyword(t *testing.T) {
+	ast := assert.New(t)
+
+	m := map[string]interface{}{
+		"is2Way":     true,
+		"twoWayInfo": "info",
+	}
+	b := checkTwoWayKeyword(m)
+	ast.True(b)
+
+	delete(m, "is2Way")
+	b = checkTwoWayKeyword(m)
+	ast.False(b)
+
+	m["is2Way"] = true
+	delete(m, "twoWayInfo")
+	ast.False(b)
+}

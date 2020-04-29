@@ -9,7 +9,7 @@ type EasyCodef struct {
 func RequestProduct(
 	productURL string,
 	serviceType ServiceStatus,
-	parameter map[string]interface{},
+	param map[string]interface{},
 ) string {
 	ProductURL = productURL
 	ServiceType = serviceType
@@ -26,6 +26,13 @@ func RequestProduct(
 	validFlag = checkPublicKey()
 	if !validFlag {
 		res := NewResponse(msg.EmptyPublicKey)
+		return res.WriteValueAsString()
+	}
+
+	// 추가인증 키워드 체크
+	validFlag = checkTwoWayKeyword(param)
+	if !validFlag {
+		res := NewResponse(msg.Invalid2WayKeyword)
 		return res.WriteValueAsString()
 	}
 
@@ -52,14 +59,25 @@ func checkClientInfo(serviceType ServiceStatus) bool {
 	return true
 }
 
-func AddAccount(serviceType ServiceStatus, param map[string]interface{}) string {
-	return RequestProduct(PathAddAccount, serviceType, param)
-}
-
 // 퍼블릭키 정보 설정 확인
 func checkPublicKey() bool {
 	if TrimAll(PublicKey) == "" {
 		return false
 	}
 	return true
+}
+
+// 2Way 키워드 존재 여부 확인
+func checkTwoWayKeyword(param map[string]interface{}) bool {
+	if _, ok := param["is2Way"]; !ok {
+		return false
+	}
+	if _, ok := param["twoWayInfo"]; !ok {
+		return false
+	}
+	return true
+}
+
+func AddAccount(serviceType ServiceStatus, param map[string]interface{}) string {
+	return RequestProduct(PathAddAccount, serviceType, param)
 }
