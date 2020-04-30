@@ -31,3 +31,15 @@ func NewResponse(message *msg.MessageConstant) *Response {
 		make(map[string]interface{}),
 	}
 }
+
+func NewResponseByMap(m map[string]interface{}) *Response {
+	response := &Response{}
+	if result, ok := m[Result]; ok {
+		response.Result = result.(map[string]interface{})
+	}
+	if data, ok := m[Data]; ok {
+		response.Data = data
+	}
+
+	return response
+}

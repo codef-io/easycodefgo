@@ -2,6 +2,9 @@ package easycodefgo
 
 import (
 	"bufio"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
 	"encoding/base64"
 	"os"
 	"strings"
@@ -36,4 +39,25 @@ func EncodeToFileString(filePath string) (string, error) {
 
 	base64str := base64.StdEncoding.EncodeToString(buf)
 	return base64str, nil
+}
+
+// RSA 암호화
+func EncryptRSA(text, publicKey string) (string, error) {
+	pub, err := base64.StdEncoding.DecodeString(publicKey)
+	if err != nil {
+		return "", err
+	}
+
+	pubI, err := x509.ParsePKIXPublicKey(pub)
+	if err != nil {
+		return "", err
+	}
+
+	key := pubI.(*rsa.PublicKey)
+	data, err := rsa.EncryptPKCS1v15(rand.Reader, key, []byte(text))
+	if err != nil {
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(data), nil
 }
