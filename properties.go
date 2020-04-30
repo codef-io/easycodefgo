@@ -48,8 +48,8 @@ var (
 )
 
 // 클라이언트 아이디
-func getCodefDomain() string {
-	switch ServiceType {
+func getCodefDomain(serviceType ServiceStatus) string {
+	switch serviceType {
 	case StatusProduct:
 		return APIDomain
 	case StatusDemo:
@@ -60,8 +60,8 @@ func getCodefDomain() string {
 }
 
 // 클라이언트 시크릿 반환
-func getClientSecret() string {
-	switch ServiceType {
+func getClientSecret(serviceType ServiceStatus) string {
+	switch serviceType {
 	case StatusProduct:
 		return ClientSecret
 	case StatusDemo:

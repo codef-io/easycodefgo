@@ -10,30 +10,30 @@ import (
 func TestGetCodefDomain(t *testing.T) {
 	ast := assert.New(t)
 	// default 테스트
-	domain := getCodefDomain()
+	domain := getCodefDomain(StatusSandbox)
 	ast.Contains(domain, SandboxDomain)
 
-	// product 테스트
-	ServiceType = StatusProduct
-	domain = getCodefDomain()
-	ast.Contains(domain, APIDomain)
+	// demo 테스트
+	domain = getCodefDomain(StatusDemo)
+	ast.Contains(domain, DemoDomain)
 
-	// 다른 테스트에 영향을 주지 않기 위해 초기화
-	ServiceType = StatusSandbox
+	// product 테스트
+	domain = getCodefDomain(StatusProduct)
+	ast.Contains(domain, APIDomain)
 }
 
 // getClinetSecret 테스트
 func TestGetClientSecret(t *testing.T) {
 	ast := assert.New(t)
 	// default 테스트
-	key := getClientSecret()
+	key := getClientSecret(StatusSandbox)
 	ast.Contains(key, SandboxClientSecret)
 
-	// product 테스트
-	ServiceType = StatusProduct
-	key = getCodefDomain()
-	ast.Contains(key, ClientSecret)
+	// demo 테스트
+	key = getClientSecret(StatusDemo)
+	ast.Contains(key, DemoClientSecret)
 
-	// 다른 테스트에 영향을 주지 않기 위해 초기화
-	ServiceType = StatusSandbox
+	// product 테스트
+	key = getClientSecret(StatusProduct)
+	ast.Contains(key, ClientSecret)
 }

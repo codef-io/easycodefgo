@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	msg "github.com/dc7303/easycodefgo/message"
+	"github.com/dc7303/easycodefgo/message"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,15 +13,15 @@ import (
 func TestWriteValueAsString(t *testing.T) {
 	ast := assert.New(t)
 
-	res := NewResponse(msg.OK)
+	res := NewResponse(message.OK)
 	str := res.WriteValueAsString()
 
 	// 원하는 결과
 	s := fmt.Sprintf(
 		`{"Data":{},"Result":{"code":"%s","extraMessage":"%s","message":"%s"}}`,
-		msg.OK.Code,
-		msg.OK.ExtraMessage,
-		msg.OK.Message,
+		message.OK.Code,
+		message.OK.ExtraMessage,
+		message.OK.Message,
 	)
 	ast.Contains(str, s)
 }
