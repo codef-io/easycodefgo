@@ -1,6 +1,7 @@
 package easycodefgo
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -60,7 +61,7 @@ func TestSetToken(t *testing.T) {
 }
 
 // requestProduct 테스트
-func __TestRequestProduct(t *testing.T) {
+func TestRequestProduct(t *testing.T) {
 	ast := assert.New(t)
 	publicKey := "MIIBIjANBgkqhkiG9w0BAQ" +
 		"EFAAOCAQ8AMIIBCgKCAQEAuhRrVDeMf" +
@@ -84,14 +85,35 @@ func __TestRequestProduct(t *testing.T) {
 		"businessType": "BK",
 		"clientType":   "P",
 		"organization": "0004",
-		"loginType":    "0",
+		"loginType":    "1",
+		"id":           "id",
 		"password":     password,
-		"keyFile":      "",
-		"derFile":      "",
 	}
 
 	accountList = append(accountList, m)
-	// TODO: connectedID 발급 구현 후 테스트 추가 작성
-	//requestProduct(SandboxDomain + PathAddAccount, AccessToken,
+	data, err := json.Marshal(accountList)
+	ast.NoError(err)
+	res, err := requestProduct(SandboxDomain+PathCreateAccount, AccessToken, string(data))
+	ast.NoError(err)
 
+	code := res.Result[Code]
+	message := res.Result[Message]
+
+	// 에러가 발생 해야함
+	ast.NotContains("", code)
+	ast.NotContains("", message)
+
+	// TODO: CF-09999 상황이 맞는지 체크
+	//fmt.Println(code)
+	//fmt.Println(message)
+
+	// 토큰 정상 발급을 예상했으나 실패
+	//accessToken := ""
+	//err = setToken(SandboxClientID, SandboxClientSecret, &accessToken)
+	//ast.NoError(err)
+	//res, err = requestProduct(SandboxDomain+PathCreateAccount, accessToken, string(data))
+	//code = res.Result[Code]
+	//message = res.Result[Message]
+	//fmt.Println(code)
+	//fmt.Println(message)
 }

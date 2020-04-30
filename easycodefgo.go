@@ -11,12 +11,9 @@ func RequestProduct(
 	serviceType ServiceStatus,
 	param map[string]interface{},
 ) string {
-	ProductURL = productURL
-	ServiceType = serviceType
-
 	validFlag := true
 	// 클라이언트 정보 체크
-	validFlag = checkClientInfo(ServiceType)
+	validFlag = checkClientInfo(serviceType)
 	if !validFlag {
 		res := NewResponse(msg.EmptyClientInfo)
 		return res.WriteValueAsString()
@@ -36,7 +33,7 @@ func RequestProduct(
 		return res.WriteValueAsString()
 	}
 
-	return ""
+	return execute(productURL, param).WriteValueAsString()
 }
 
 // 클라이언트 정보 검사
@@ -76,6 +73,10 @@ func checkTwoWayKeyword(param map[string]interface{}) bool {
 		return false
 	}
 	return true
+}
+
+func CreateAccount(serviceType ServiceStatus, param map[string]interface{}) {
+	//product
 }
 
 func AddAccount(serviceType ServiceStatus, param map[string]interface{}) string {

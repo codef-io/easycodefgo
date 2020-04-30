@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -17,22 +16,28 @@ import (
 
 const repeatCount = 3
 
-func execute(urlPath string, body map[string]interface{}) *Response {
-	_, clientID, clientSecret := getReqInfoByServiceType(ServiceType)
+func execute(urlPath string, body map[string]interface{}) (*Response, error) {
+	domain, clientID, clientSecret := getReqInfoByServiceType(ServiceType)
 
 	// TODO: 에러처리 추가 확인 필요
 	err := setToken(clientID, clientSecret, &AccessToken)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	b, err := json.Marshal(body)
 	if err != nil {
-		return NewResponse(message.InvalidJson)
+		return nil, err
 	}
-	_ = url.QueryEscape(string(b))
+	encBodyStr := url.QueryEscape(string(b))
 
-	return nil
+	_, err = requestProduct(domain+urlPath, AccessToken, encBodyStr)
+	if err != nil {
+		return nil, err
+	}
+	//res
+
+	return nil, nil
 }
 
 // 서비스 상태에 해당하는 요청 정보를 가져온다
