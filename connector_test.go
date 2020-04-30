@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// getReqInfoByServiceType 테스트
 func TestGetReqInfoByServiceType(t *testing.T) {
 	ast := assert.New(t)
 
@@ -32,4 +33,16 @@ func TestGetReqInfoByServiceType(t *testing.T) {
 	// 초기화
 	SetClientInfoForDemo("", "")
 	SetClientInfo("", "")
+}
+
+// 액세스 토큰 요청 테스트
+func TestRequestToken(t *testing.T) {
+	ast := assert.New(t)
+	m, err := requestToken(SandboxClientID, SandboxClientSecret)
+	ast.NoError(err)
+	ast.NotNil(m)
+
+	token, ok := m["access_token"]
+	ast.True(ok)
+	ast.NotNil(token)
 }

@@ -6,7 +6,7 @@ const (
 	OAuthDomain         = "https://oauth.codef.io"               // OAUTH 서버 도메인
 	PathGetToken        = "/oauth/token"                         // OAUTH 엑세스 토큰 발급 URL PATH
 	SandboxDomain       = "https://sandbox.codef.io"             // 샌드박스 서버 도메인
-	SandboxClientID     = "ef27cfaa-10c1-4470-adac-60ba476273f"  // 샌드박스 엑세스 토큰 발급을 위한 클라이언트 아이디
+	SandboxClientID     = "ef27cfaa-10c1-4470-adac-60ba476273f9" // 샌드박스 엑세스 토큰 발급을 위한 클라이언트 아이디
 	SandboxClientSecret = "83160c33-9045-4915-86d8-809473cdf5c3" // 샌드박스 액세스 토큰 발급을 위한 클라이언트 시크릿
 	DemoDomain          = "https://development.codef.io"         // 데모 서버 도메인
 	APIDomain           = "https://api.codef.io"                 // 정식 서버 도메인
