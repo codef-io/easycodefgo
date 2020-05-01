@@ -157,16 +157,16 @@ func requestProduct(urlPath, token, bodyStr string) (*Response, error) {
 			return nil, err
 		}
 
-		return NewResponseByMap(m), nil
+		return newResponseByMap(m), nil
 	case http.StatusBadRequest:
-		return NewResponse(message.BadRequest), nil
+		return newResponseByMessage(message.BadRequest), nil
 	case http.StatusUnauthorized:
-		return NewResponse(message.Unauthorized), nil
+		return newResponseByMessage(message.Unauthorized), nil
 	case http.StatusForbidden:
-		return NewResponse(message.Forbidden), nil
+		return newResponseByMessage(message.Forbidden), nil
 	case http.StatusNotFound:
-		return NewResponse(message.NotFound), nil
+		return newResponseByMessage(message.NotFound), nil
 	default:
-		return NewResponse(message.ServerError), nil
+		return newResponseByMessage(message.ServerError), nil
 	}
 }

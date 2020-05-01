@@ -15,21 +15,21 @@ func RequestProduct(
 	// 클라이언트 정보 체크
 	validFlag = checkClientInfo(serviceType)
 	if !validFlag {
-		res := NewResponse(msg.EmptyClientInfo)
+		res := newResponseByMessage(msg.EmptyClientInfo)
 		return res.WriteValueAsString(), nil
 	}
 
 	// 퍼블릭 키 체크
 	validFlag = checkPublicKey()
 	if !validFlag {
-		res := NewResponse(msg.EmptyPublicKey)
+		res := newResponseByMessage(msg.EmptyPublicKey)
 		return res.WriteValueAsString(), nil
 	}
 
 	// 추가인증 키워드 체크
 	validFlag = checkTwoWayKeyword(param)
 	if !validFlag {
-		res := NewResponse(msg.Invalid2WayKeyword)
+		res := newResponseByMessage(msg.Invalid2WayKeyword)
 		return res.WriteValueAsString(), nil
 	}
 

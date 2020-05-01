@@ -96,8 +96,7 @@ func TestRequestProduct(t *testing.T) {
 	res, err := requestProduct(SandboxDomain+PathCreateAccount, AccessToken, string(data))
 	ast.NoError(err)
 
-	code := res.Result[Code]
-	message := res.Result[Message]
+	code, message, _ := res.GetMessageInfo()
 
 	// 에러가 발생 해야함
 	ast.NotEmpty(code)

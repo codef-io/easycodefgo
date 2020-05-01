@@ -6,40 +6,42 @@ import (
 	msg "github.com/dc7303/easycodefgo/message"
 )
 
-type Response struct {
-	Result map[string]interface{}
-	Data   interface{}
+type Response map[string]interface{}
+
+func (self *Response) GetData() interface{} {
+	return (*self)[Data]
+}
+
+func (self *Response) GetResult() map[string]interface{} {
+	return (*self)[Result].(map[string]interface{})
+}
+
+func (self *Response) GetMessageInfo() (string, string, string) {
+	r := self.GetResult()
+	return r[Code].(string), r[Message].(string), r[ExtraMessage].(string)
 }
 
 func (self *Response) WriteValueAsString() string {
-	m := map[string]interface{}{
-		"Result": self.Result,
-		"Data":   self.Data,
-	}
-	b, _ := json.Marshal(m)
+	b, _ := json.Marshal(self)
 	return string(b)
 }
 
-func NewResponse(message *msg.MessageConstant) *Response {
+// message 정보로 Response 생성 메소드
+func newResponseByMessage(message *msg.MessageConstant) *Response {
 	result := map[string]interface{}{
 		Code:         message.Code,
 		Message:      message.Message,
 		ExtraMessage: message.ExtraMessage,
 	}
 	return &Response{
-		result,
-		make(map[string]interface{}),
+		Result: result,
+		Data:   make(map[string]interface{}),
 	}
 }
 
-func NewResponseByMap(m map[string]interface{}) *Response {
-	response := &Response{}
-	if result, ok := m[Result]; ok {
-		response.Result = result.(map[string]interface{})
-	}
-	if data, ok := m[Data]; ok {
-		response.Data = data
-	}
-
-	return response
+// Response 생성 메소드
+// 코드에프 결과를 생성하기 위한 메소드
+func newResponseByMap(m map[string]interface{}) *Response {
+	res := Response(m)
+	return &res
 }
