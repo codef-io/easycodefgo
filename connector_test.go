@@ -13,23 +13,23 @@ func TestGetReqInfoByServiceType(t *testing.T) {
 
 	// 샌드박스
 	domain, id, secret := getReqInfoByServiceType(StatusSandbox)
-	ast.Contains(SandboxDomain, domain)
-	ast.Contains(SandboxClientID, id)
-	ast.Contains(SandboxClientSecret, secret)
+	ast.Equal(SandboxDomain, domain)
+	ast.Equal(SandboxClientID, id)
+	ast.Equal(SandboxClientSecret, secret)
 
 	// 데모
 	SetClientInfoForDemo("demoID", "demoSecret")
 	domain, id, secret = getReqInfoByServiceType(StatusDemo)
-	ast.Contains(DemoDomain, domain)
-	ast.Contains(DemoClientID, id)
-	ast.Contains(DemoClientSecret, secret)
+	ast.Equal(DemoDomain, domain)
+	ast.Equal(DemoClientID, id)
+	ast.Equal(DemoClientSecret, secret)
 
 	// 정식버전
 	SetClientInfo("productID", "productSecret")
 	domain, id, secret = getReqInfoByServiceType(StatusProduct)
-	ast.Contains(APIDomain, domain)
-	ast.Contains(ClientID, id)
-	ast.Contains(ClientSecret, secret)
+	ast.Equal(APIDomain, domain)
+	ast.Equal(ClientID, id)
+	ast.Equal(ClientSecret, secret)
 
 	// 초기화
 	SetClientInfoForDemo("", "")
@@ -54,7 +54,7 @@ func TestSetToken(t *testing.T) {
 	ast := assert.New(t)
 	err := setToken(SandboxClientID, SandboxClientSecret, &AccessToken)
 	ast.NoError(err)
-	ast.NotContains("", AccessToken)
+	ast.NotEmpty(AccessToken)
 
 	// 초기화
 	AccessToken = ""
@@ -100,8 +100,8 @@ func TestRequestProduct(t *testing.T) {
 	message := res.Result[Message]
 
 	// 에러가 발생 해야함
-	ast.NotContains("", code)
-	ast.NotContains("", message)
+	ast.NotEmpty(code)
+	ast.NotEmpty(message)
 
 	// TODO: CF-09999 상황이 맞는지 체크
 	//fmt.Println(code)

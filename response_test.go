@@ -23,5 +23,5 @@ func TestWriteValueAsString(t *testing.T) {
 		message.OK.ExtraMessage,
 		message.OK.Message,
 	)
-	ast.Contains(str, s)
+	ast.Equal(str, s)
 }

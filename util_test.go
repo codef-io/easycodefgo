@@ -13,7 +13,7 @@ func TestTrimAll(t *testing.T) {
 	ast := assert.New(t)
 	str := " hello world "
 	r := TrimAll(str)
-	ast.Contains(r, "helloworld")
+	ast.Equal(r, "helloworld")
 }
 
 // base64 인코딩 테스트
@@ -28,7 +28,7 @@ func TestEncodeToFileString(t *testing.T) {
 	// EncodeToFileString 호출
 	result, err := EncodeToFileString(mockFile)
 	ast.NoError(err)
-	ast.Contains("aGVsbG8gd29ybGQ=", result)
+	ast.Equal("aGVsbG8gd29ybGQ=", result)
 
 	// 테스트 파일 삭제
 	err = os.Remove(mockFile)
@@ -53,7 +53,7 @@ func TestEncryptRSA(t *testing.T) {
 		"MLEnLisDWEZMkenO0xJbwOwIDAQAB"
 	result, err := EncryptRSA("hello world", publicKey)
 	ast.NoError(err)
-	ast.NotContains("", result)
+	ast.NotEmpty(result)
 }
 
 // 테스트 파일 생성

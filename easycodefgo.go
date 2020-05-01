@@ -10,30 +10,34 @@ func RequestProduct(
 	productURL string,
 	serviceType ServiceStatus,
 	param map[string]interface{},
-) string {
+) (string, error) {
 	validFlag := true
 	// 클라이언트 정보 체크
 	validFlag = checkClientInfo(serviceType)
 	if !validFlag {
 		res := NewResponse(msg.EmptyClientInfo)
-		return res.WriteValueAsString()
+		return res.WriteValueAsString(), nil
 	}
 
 	// 퍼블릭 키 체크
 	validFlag = checkPublicKey()
 	if !validFlag {
 		res := NewResponse(msg.EmptyPublicKey)
-		return res.WriteValueAsString()
+		return res.WriteValueAsString(), nil
 	}
 
 	// 추가인증 키워드 체크
 	validFlag = checkTwoWayKeyword(param)
 	if !validFlag {
 		res := NewResponse(msg.Invalid2WayKeyword)
-		return res.WriteValueAsString()
+		return res.WriteValueAsString(), nil
 	}
 
-	return execute(productURL, param).WriteValueAsString()
+	res, err := execute(productURL, param)
+	if err != nil {
+		return "", err
+	}
+	return res.WriteValueAsString(), nil
 }
 
 // 클라이언트 정보 검사
@@ -51,7 +55,6 @@ func checkClientInfo(serviceType ServiceStatus) bool {
 		if TrimAll(SandboxClientID) == "" || TrimAll(SandboxClientSecret) == "" {
 			return false
 		}
-		break
 	}
 	return true
 }
@@ -79,6 +82,6 @@ func CreateAccount(serviceType ServiceStatus, param map[string]interface{}) {
 	//product
 }
 
-func AddAccount(serviceType ServiceStatus, param map[string]interface{}) string {
+func AddAccount(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
 	return RequestProduct(PathAddAccount, serviceType, param)
 }
