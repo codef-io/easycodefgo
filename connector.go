@@ -93,8 +93,7 @@ func requestToken(clientID, clientSecret string) (map[string]interface{}, error)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Authorization", "Basic "+authEnc)
 
-	client := &http.Client{}
-	res, err := client.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +136,7 @@ func requestProduct(urlPath, token, bodyStr string) (*Response, error) {
 		req.Header.Add("Authorization", "Bearer "+token)
 	}
 
-	client := http.Client{}
-	res, err := client.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -150,9 +148,12 @@ func requestProduct(urlPath, token, bodyStr string) (*Response, error) {
 		if err != nil {
 			return nil, err
 		}
-
+		resultData, err := url.QueryUnescape(string(resBody))
+		if err != nil {
+			return nil, err
+		}
 		m := make(map[string]interface{})
-		err = json.Unmarshal(resBody, &m)
+		err = json.Unmarshal([]byte(resultData), &m)
 		if err != nil {
 			return nil, err
 		}

@@ -79,40 +79,41 @@ func TestRequestProduct(t *testing.T) {
 
 	password, err := EncryptRSA("password", publicKey)
 	ast.NoError(err)
-	accountList := make([]map[string]interface{}, 1)
+	accountList := []map[string]interface{}{}
 	m := map[string]interface{}{
 		"countryCode":  "KR",
 		"businessType": "BK",
 		"clientType":   "P",
 		"organization": "0004",
 		"loginType":    "1",
-		"id":           "id",
+		"id":           "testID",
 		"password":     password,
 	}
 
 	accountList = append(accountList, m)
-	data, err := json.Marshal(accountList)
+	param := map[string][]map[string]interface{}{
+		"accountList": accountList,
+	}
+	data, err := json.Marshal(param)
 	ast.NoError(err)
-	res, err := requestProduct(SandboxDomain+PathCreateAccount, AccessToken, string(data))
+	accessToken := ""
+
+	// 404 에러 발생 테스트
+	res, err := requestProduct(SandboxDomain+"/failPath", accessToken, string(data))
+	ast.NoError(err)
+	code, _, _ := res.GetMessageInfo()
+	ast.Equal("CF-00404", code)
+	ast.Empty(res.GetData())
+
+	// Connected ID 정상 발급 테스트
+	err = setToken(SandboxClientID, SandboxClientSecret, &accessToken)
 	ast.NoError(err)
 
-	code, message, _ := res.GetMessageInfo()
-
-	// 에러가 발생 해야함
-	ast.NotEmpty(code)
-	ast.NotEmpty(message)
-
-	// TODO: CF-09999 상황이 맞는지 체크
-	//fmt.Println(code)
-	//fmt.Println(message)
-
-	// 토큰 정상 발급을 예상했으나 실패
-	//accessToken := ""
-	//err = setToken(SandboxClientID, SandboxClientSecret, &accessToken)
-	//ast.NoError(err)
-	//res, err = requestProduct(SandboxDomain+PathCreateAccount, accessToken, string(data))
-	//code = res.Result[Code]
-	//message = res.Result[Message]
-	//fmt.Println(code)
-	//fmt.Println(message)
+	res, err = requestProduct(SandboxDomain+PathCreateAccount, accessToken, string(data))
+	code, _, _ = res.GetMessageInfo()
+	ast.Equal("CF-00000", code)
+	result, ok := res.GetData().(map[string]interface{})
+	ast.True(ok)
+	_, ok = result["connectedId"]
+	ast.True(ok)
 }

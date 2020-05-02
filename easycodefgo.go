@@ -78,8 +78,8 @@ func checkTwoWayKeyword(param map[string]interface{}) bool {
 	return true
 }
 
-func CreateAccount(serviceType ServiceStatus, param map[string]interface{}) {
-	//product
+func CreateAccount(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
+	return RequestProduct(PathCreateAccount, serviceType, param)
 }
 
 func AddAccount(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
