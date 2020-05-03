@@ -6,7 +6,7 @@ import (
 
 // 상품 요청
 func RequestProduct(
-	productURL string,
+	productPath string,
 	serviceType ServiceType,
 	param map[string]interface{},
 ) (string, error) {
@@ -25,7 +25,7 @@ func RequestProduct(
 		return res.WriteValueAsString(), nil
 	}
 
-	res, err := execute(productURL, param, serviceType)
+	res, err := execute(productPath, param, serviceType)
 	if err != nil {
 		return "", err
 	}
