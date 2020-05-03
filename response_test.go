@@ -40,8 +40,8 @@ func TestNewResponseByMap(t *testing.T) {
 	ast := assert.New(t)
 
 	m := map[string]interface{}{
-		Result: make(map[string]interface{}),
-		Data:   make([]map[string]interface{}, 1),
+		KeyResult: make(map[string]interface{}),
+		KeyData:   make([]map[string]interface{}, 1),
 	}
 	res := newResponseByMap(m)
 	ast.NotNil(res)

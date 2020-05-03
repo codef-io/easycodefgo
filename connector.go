@@ -14,8 +14,6 @@ import (
 	"github.com/dc7303/easycodefgo/message"
 )
 
-const repeatCount = 3
-
 // CODEF API 요청 실행
 func execute(
 	urlPath string,
@@ -58,6 +56,7 @@ func getReqInfoByServiceType(serviceType ServiceStatus) (string, string, string)
 
 // 액세스 토큰 셋팅
 func setToken(clientID, clientSecret string, accessToken *string) error {
+	repeatCount := 3
 	i := 0
 	if *accessToken == "" {
 		for i < repeatCount {

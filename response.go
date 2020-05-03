@@ -9,16 +9,16 @@ import (
 type Response map[string]interface{}
 
 func (self *Response) GetData() interface{} {
-	return (*self)[Data]
+	return (*self)[KeyData]
 }
 
 func (self *Response) GetResult() map[string]interface{} {
-	return (*self)[Result].(map[string]interface{})
+	return (*self)[KeyResult].(map[string]interface{})
 }
 
 func (self *Response) GetMessageInfo() (string, string, string) {
 	r := self.GetResult()
-	return r[Code].(string), r[Message].(string), r[ExtraMessage].(string)
+	return r[KeyCode].(string), r[KeyMessage].(string), r[KeyExtraMessage].(string)
 }
 
 func (self *Response) WriteValueAsString() string {
@@ -29,13 +29,13 @@ func (self *Response) WriteValueAsString() string {
 // message 정보로 Response 생성 메소드
 func newResponseByMessage(message *msg.MessageConstant) *Response {
 	result := map[string]interface{}{
-		Code:         message.Code,
-		Message:      message.Message,
-		ExtraMessage: message.ExtraMessage,
+		KeyCode:         message.Code,
+		KeyMessage:      message.Message,
+		KeyExtraMessage: message.ExtraMessage,
 	}
 	return &Response{
-		Result: result,
-		Data:   make(map[string]interface{}),
+		KeyResult: result,
+		KeyData:   make(map[string]interface{}),
 	}
 }
 

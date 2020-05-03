@@ -1,7 +1,5 @@
 package easycodefgo
 
-type ServiceStatus int
-
 const (
 	OAuthDomain         = "https://oauth.codef.io"               // OAUTH 서버 도메인
 	PathGetToken        = "/oauth/token"                         // OAUTH 엑세스 토큰 발급 URL PATH
@@ -18,17 +16,19 @@ const (
 	PathGetAccountList = "/v1/account/list"             // 계정 목록 조회 URL
 	PathGetCIDList     = "/v1/account/connectedId-list" // 커넥티드 아이디 목록 조회 URL
 
-	Result       = "result"       // 응답부 수행 결과 키워드
-	Code         = "code"         // 응답부 수행 결과 메시지 코드 키워드
-	Message      = "message"      // 응답부 수행 결과 메시지 키워드
-	ExtraMessage = "extraMessage" // 응답부 수행 결과 추가 메시지 키워드
-	Data         = "data"
-	AccountList  = "accountList" // 계정 목록 키워드
-	ConnectedID  = "connectedId"
+	KeyResult       = "result"       // 응답부 수행 결과 키워드
+	KeyCode         = "code"         // 응답부 수행 결과 메시지 코드 키워드
+	KeyMessage      = "message"      // 응답부 수행 결과 메시지 키워드
+	KeyExtraMessage = "extraMessage" // 응답부 수행 결과 추가 메시지 키워드
+	KeyData         = "data"
+	KeyAccountList  = "accountList" // 계정 목록 키워드
+	KeyConnectedID  = "connectedId"
 
-	InvalidToken = "invalidToken" // 엑세스 토큰 거절 사유1
-	AccessDenied = "accessDenied" // 엑세스 토큰 거절 사유2
+	KeyInvalidToken = "invalidToken" // 엑세스 토큰 거절 사유1
+	KeyAccessDenied = "accessDenied" // 엑세스 토큰 거절 사유2
 )
+
+type ServiceStatus int
 
 const (
 	StatusProduct ServiceStatus = iota // 정식버전
@@ -37,14 +37,12 @@ const (
 )
 
 var (
-	AccessToken      string          // OAUTH2.0 토큰
-	ProductURL       string          // 요청 상품 주소
-	DemoClientID     string          // 데모 엑세스 토큰 밝브을 위한 클라이언트 아이디
-	DemoClientSecret string          // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
-	ClientID         string          // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
-	ClientSecret     string          // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
-	PublicKey        string          // RSA암호화를 위한 퍼블릭키
-	ServiceType      = StatusSandbox // 코드에프 서비스 타입(0: 정식, 1:데모 2: 샌드박스)
+	AccessToken      string // OAUTH2.0 토큰
+	DemoClientID     string // 데모 엑세스 토큰 밝브을 위한 클라이언트 아이디
+	DemoClientSecret string // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
+	ClientID         string // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
+	ClientSecret     string // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
+	PublicKey        string // RSA암호화를 위한 퍼블릭키
 )
 
 // 클라이언트 아이디
