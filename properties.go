@@ -36,14 +36,6 @@ const (
 	TypeSandbox                    // 샌드박스
 )
 
-var (
-	AccessToken      string // OAUTH2.0 토큰
-	DemoClientID     string // 데모 엑세스 토큰 밝브을 위한 클라이언트 아이디
-	DemoClientSecret string // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
-	ClientID         string // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
-	ClientSecret     string // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
-)
-
 // 클라이언트 아이디
 func getCodefDomain(serviceType ServiceType) string {
 	switch serviceType {
@@ -54,28 +46,4 @@ func getCodefDomain(serviceType ServiceType) string {
 	default:
 		return SandboxDomain
 	}
-}
-
-// 클라이언트 시크릿 반환
-func getClientSecret(serviceType ServiceType) string {
-	switch serviceType {
-	case TypeProduct:
-		return ClientSecret
-	case TypeDemo:
-		return DemoClientSecret
-	default:
-		return SandboxClientSecret
-	}
-}
-
-// 정식서버 사용을 위한 클라이언트 정보 설정
-func SetClientInfo(clientID, clientSecret string) {
-	ClientID = clientID
-	ClientSecret = clientSecret
-}
-
-// 데모 서버 사용을 위한 클라이언트 정보 설정
-func SetClientInfoForDemo(clientId, clientSecret string) {
-	DemoClientID = clientId
-	DemoClientSecret = clientSecret
 }

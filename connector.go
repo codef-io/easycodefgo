@@ -18,11 +18,10 @@ import (
 func execute(
 	urlPath string,
 	body map[string]interface{},
-	serviceType ServiceType,
+	accessToken *string,
+	reqInfo *requestInfo,
 ) (*Response, error) {
-	domain, clientID, clientSecret := getReqInfoByServiceType(serviceType)
-
-	err := setToken(clientID, clientSecret, &AccessToken)
+	err := setToken(reqInfo.ClientID, reqInfo.ClientSecret, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -33,25 +32,12 @@ func execute(
 	}
 	encBodyStr := url.QueryEscape(string(b))
 
-	res, err := requestProduct(domain+urlPath, AccessToken, encBodyStr)
+	res, err := requestProduct(reqInfo.Domain+urlPath, *accessToken, encBodyStr)
 	if err != nil {
 		return nil, err
 	}
 
 	return res, nil
-}
-
-// 서비스 상태에 해당하는 요청 정보를 가져온다
-// return (domain, clientID, clientSecret)
-func getReqInfoByServiceType(serviceType ServiceType) (string, string, string) {
-	switch serviceType {
-	case TypeProduct:
-		return APIDomain, ClientID, ClientSecret
-	case TypeDemo:
-		return DemoDomain, DemoClientID, DemoClientSecret
-	default:
-		return SandboxDomain, SandboxClientID, SandboxClientSecret
-	}
 }
 
 // 액세스 토큰 셋팅
