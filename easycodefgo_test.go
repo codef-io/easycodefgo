@@ -25,19 +25,6 @@ func TestCheckClientInfo(t *testing.T) {
 	SetClientInfo("", "")
 }
 
-// 퍼블릭키 체크 테스트
-func TestCheckPublicKey(t *testing.T) {
-	ast := assert.New(t)
-
-	b := checkPublicKey()
-	ast.False(b)
-	PublicKey = "test"
-	b = checkPublicKey()
-	ast.True(b)
-
-	PublicKey = ""
-}
-
 // 2Way 키워드 존재 여부 확인
 func TestCheckTwoWayKeyword(t *testing.T) {
 	ast := assert.New(t)

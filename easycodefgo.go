@@ -16,13 +16,6 @@ func RequestProduct(
 		return res.WriteValueAsString(), nil
 	}
 
-	// 퍼블릭 키 체크
-	validFlag = checkPublicKey()
-	if !validFlag {
-		res := newResponseByMessage(msg.EmptyPublicKey)
-		return res.WriteValueAsString(), nil
-	}
-
 	// 추가인증 키워드 체크
 	validFlag = checkTwoWayKeyword(param)
 	if !validFlag {
@@ -52,14 +45,6 @@ func checkClientInfo(serviceType ServiceType) bool {
 		if TrimAll(SandboxClientID) == "" || TrimAll(SandboxClientSecret) == "" {
 			return false
 		}
-	}
-	return true
-}
-
-// 퍼블릭키 정보 설정 확인
-func checkPublicKey() bool {
-	if TrimAll(PublicKey) == "" {
-		return false
 	}
 	return true
 }

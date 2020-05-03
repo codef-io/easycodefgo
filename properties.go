@@ -42,7 +42,6 @@ var (
 	DemoClientSecret string // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
 	ClientID         string // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
 	ClientSecret     string // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
-	PublicKey        string // RSA암호화를 위한 퍼블릭키
 )
 
 // 클라이언트 아이디
@@ -79,9 +78,4 @@ func SetClientInfo(clientID, clientSecret string) {
 func SetClientInfoForDemo(clientId, clientSecret string) {
 	DemoClientID = clientId
 	DemoClientSecret = clientSecret
-}
-
-// RSA 암호화를 위한 퍼블릭키 생성
-func SetPublicKey(publicKey string) {
-	PublicKey = publicKey
 }
