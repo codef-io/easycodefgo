@@ -34,13 +34,13 @@ func TestCheckTwoWayKeyword(t *testing.T) {
 		"twoWayInfo": "info",
 	}
 	b := checkTwoWayKeyword(m)
-	ast.True(b)
+	ast.False(b)
 
 	delete(m, "is2Way")
 	b = checkTwoWayKeyword(m)
 	ast.False(b)
 
-	m["is2Way"] = true
 	delete(m, "twoWayInfo")
-	ast.False(b)
+	b = checkTwoWayKeyword(m)
+	ast.True(b)
 }

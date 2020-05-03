@@ -1,6 +1,8 @@
 package easycodefgo
 
-import msg "github.com/dc7303/easycodefgo/message"
+import (
+	msg "github.com/dc7303/easycodefgo/message"
+)
 
 // 상품 요청
 func RequestProduct(
@@ -51,10 +53,10 @@ func checkClientInfo(serviceType ServiceType) bool {
 
 // 2Way 키워드 존재 여부 확인
 func checkTwoWayKeyword(param map[string]interface{}) bool {
-	if _, ok := param["is2Way"]; !ok {
+	if _, ok := param["is2Way"]; ok {
 		return false
 	}
-	if _, ok := param["twoWayInfo"]; !ok {
+	if _, ok := param["twoWayInfo"]; ok {
 		return false
 	}
 	return true
