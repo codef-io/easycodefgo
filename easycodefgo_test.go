@@ -91,6 +91,20 @@ func TestRequestProductBySandbox(t *testing.T) {
 	cid, ok := castData[KeyConnectedID]
 	ast.True(ok)
 	ast.NotEmpty(cid)
+
+	// param == nil 로 요청
+	result, err = codef.RequestProduct(PathGetCIDList, TypeSandbox, nil)
+	ast.NoError(err)
+
+	// 결과 맵으로 변환
+	resultMap = make(map[string]interface{})
+	err = json.Unmarshal([]byte(result), &resultMap)
+	ast.NoError(err)
+
+	// data 존재 여부
+	data, ok = resultMap[KeyData]
+	ast.True(ok)
+	ast.NotEmpty(data)
 }
 
 // getReqInfoByServiceType 테스트
