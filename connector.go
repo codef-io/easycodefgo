@@ -16,10 +16,14 @@ import (
 
 const repeatCount = 3
 
-func execute(urlPath string, body map[string]interface{}) (*Response, error) {
-	domain, clientID, clientSecret := getReqInfoByServiceType(ServiceType)
+// CODEF API 요청 실행
+func execute(
+	urlPath string,
+	body map[string]interface{},
+	serviceType ServiceStatus,
+) (*Response, error) {
+	domain, clientID, clientSecret := getReqInfoByServiceType(serviceType)
 
-	// TODO: 에러처리 추가 확인 필요
 	err := setToken(clientID, clientSecret, &AccessToken)
 	if err != nil {
 		return nil, err
@@ -31,13 +35,12 @@ func execute(urlPath string, body map[string]interface{}) (*Response, error) {
 	}
 	encBodyStr := url.QueryEscape(string(b))
 
-	_, err = requestProduct(domain+urlPath, AccessToken, encBodyStr)
+	res, err := requestProduct(domain+urlPath, AccessToken, encBodyStr)
 	if err != nil {
 		return nil, err
 	}
-	//res
 
-	return nil, nil
+	return res, nil
 }
 
 // 서비스 상태에 해당하는 요청 정보를 가져온다
@@ -118,14 +121,14 @@ func requestToken(clientID, clientSecret string) (map[string]interface{}, error)
 }
 
 // CODEF POST 요청
-func requestProduct(urlPath, token, bodyStr string) (*Response, error) {
+func requestProduct(reqURL, token, bodyStr string) (*Response, error) {
 	var body *bytes.Buffer = nil
 	if bodyStr != "" {
 		body = bytes.NewBufferString(bodyStr)
 	}
 
 	body = bytes.NewBufferString(bodyStr)
-	req, err := http.NewRequest("POST", urlPath, body)
+	req, err := http.NewRequest("POST", reqURL, body)
 	if err != nil {
 		return nil, err
 	}

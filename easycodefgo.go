@@ -33,7 +33,7 @@ func RequestProduct(
 		return res.WriteValueAsString(), nil
 	}
 
-	res, err := execute(productURL, param)
+	res, err := execute(productURL, param, serviceType)
 	if err != nil {
 		return "", err
 	}

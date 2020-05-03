@@ -63,6 +63,52 @@ func TestSetToken(t *testing.T) {
 // requestProduct 테스트
 func TestRequestProduct(t *testing.T) {
 	ast := assert.New(t)
+	param, err := createParamForCreateConnectedID()
+	ast.NoError(err)
+
+	data, err := json.Marshal(param)
+	ast.NoError(err)
+
+	accessToken := ""
+	// 404 에러 발생 테스트
+	res, err := requestProduct(SandboxDomain+"/failPath", accessToken, string(data))
+	ast.NoError(err)
+	code, _, _ := res.GetMessageInfo()
+	ast.Equal("CF-00404", code)
+	ast.Empty(res.GetData())
+
+	// Connected ID 정상 발급 테스트
+	err = setToken(SandboxClientID, SandboxClientSecret, &accessToken)
+	ast.NoError(err)
+
+	res, err = requestProduct(SandboxDomain+PathCreateAccount, accessToken, string(data))
+	testExistConnectedID(ast, res)
+}
+
+// execute 테스트
+func TestExecute(t *testing.T) {
+	ast := assert.New(t)
+	param, err := createParamForCreateConnectedID()
+	ast.NoError(err)
+
+	res, err := execute(PathCreateAccount, param, StatusSandbox)
+	ast.NoError(err)
+
+	testExistConnectedID(ast, res)
+}
+
+// connectedID 발급 성공 여부 테스트
+func testExistConnectedID(ast *assert.Assertions, res *Response) {
+	code, _, _ := res.GetMessageInfo()
+	ast.Equal("CF-00000", code)
+	result, ok := res.GetData().(map[string]interface{})
+	ast.True(ok)
+	_, ok = result["connectedId"]
+	ast.True(ok)
+}
+
+// ConnectedID 발급을 위한 Body 테스트 데이터 생성
+func createParamForCreateConnectedID() (map[string]interface{}, error) {
 	publicKey := "MIIBIjANBgkqhkiG9w0BAQ" +
 		"EFAAOCAQ8AMIIBCgKCAQEAuhRrVDeMf" +
 		"b2fBaf8WmtGcQ23Cie+qDQqnkKG9eZV" +
@@ -78,7 +124,9 @@ func TestRequestProduct(t *testing.T) {
 		"MLEnLisDWEZMkenO0xJbwOwIDAQAB"
 
 	password, err := EncryptRSA("password", publicKey)
-	ast.NoError(err)
+	if err != nil {
+		return nil, err
+	}
 	accountList := []map[string]interface{}{}
 	m := map[string]interface{}{
 		"countryCode":  "KR",
@@ -91,29 +139,9 @@ func TestRequestProduct(t *testing.T) {
 	}
 
 	accountList = append(accountList, m)
-	param := map[string][]map[string]interface{}{
+	param := map[string]interface{}{
 		"accountList": accountList,
 	}
-	data, err := json.Marshal(param)
-	ast.NoError(err)
-	accessToken := ""
 
-	// 404 에러 발생 테스트
-	res, err := requestProduct(SandboxDomain+"/failPath", accessToken, string(data))
-	ast.NoError(err)
-	code, _, _ := res.GetMessageInfo()
-	ast.Equal("CF-00404", code)
-	ast.Empty(res.GetData())
-
-	// Connected ID 정상 발급 테스트
-	err = setToken(SandboxClientID, SandboxClientSecret, &accessToken)
-	ast.NoError(err)
-
-	res, err = requestProduct(SandboxDomain+PathCreateAccount, accessToken, string(data))
-	code, _, _ = res.GetMessageInfo()
-	ast.Equal("CF-00000", code)
-	result, ok := res.GetData().(map[string]interface{})
-	ast.True(ok)
-	_, ok = result["connectedId"]
-	ast.True(ok)
+	return param, nil
 }
