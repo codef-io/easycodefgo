@@ -10,20 +10,37 @@ import (
 // checkClientInfo 테스트
 func TestCheckClientInfo(t *testing.T) {
 	ast := assert.New(t)
+
+	codef := &Codef{}
 	// 샌드박스는 클라이언트 정보가 상수로 입력되어 있어 True
-	b := checkClientInfo(TypeSandbox)
+	b := codef.checkClientInfo(TypeSandbox)
 	ast.True(b)
 
 	// 정식버전에는 클라이언트 정보 입력이 필요하다
-	b = checkClientInfo(TypeProduct)
+	b = codef.checkClientInfo(TypeProduct)
 	ast.False(b)
 
-	SetClientInfo("test", "test")
-	b = checkClientInfo(TypeProduct)
+	codef.SetClientInfo("test", "test")
+	b = codef.checkClientInfo(TypeProduct)
 	ast.True(b)
+}
 
-	// 초기화
-	SetClientInfo("", "")
+// getClinetSecret 테스트
+func TestGetClientSecret(t *testing.T) {
+	ast := assert.New(t)
+
+	codef := &Codef{}
+	// default 테스트
+	key := codef.getClientSecret(TypeSandbox)
+	ast.Equal(key, SandboxClientSecret)
+
+	// demo 테스트
+	key = codef.getClientSecret(TypeDemo)
+	ast.Equal(key, codef.DemoClientSecret)
+
+	// product 테스트
+	key = codef.getClientSecret(TypeProduct)
+	ast.Equal(key, codef.ClientSecret)
 }
 
 // 2Way 키워드 존재 여부 확인
@@ -50,12 +67,13 @@ func TestCheckTwoWayKeyword(t *testing.T) {
 func TestRequestProductBySandbox(t *testing.T) {
 	ast := assert.New(t)
 
+	codef := &Codef{}
 	// 테스트 데이터 생성
 	param, err := createParamForCreateConnectedID()
 	ast.NoError(err)
 
 	// CreateAccount 요청
-	result, err := RequestProduct(PathCreateAccount, TypeSandbox, param)
+	result, err := codef.RequestProduct(PathCreateAccount, TypeSandbox, param)
 	ast.NoError(err)
 
 	// 결과 맵으로 변환
@@ -73,4 +91,30 @@ func TestRequestProductBySandbox(t *testing.T) {
 	cid, ok := castData[KeyConnectedID]
 	ast.True(ok)
 	ast.NotEmpty(cid)
+}
+
+// getReqInfoByServiceType 테스트
+func TestGetReqInfoByServiceType(t *testing.T) {
+	ast := assert.New(t)
+
+	codef := &Codef{}
+	// 샌드박스
+	reqInfo := codef.getReqInfoByServiceType(TypeSandbox)
+	ast.Equal(SandboxDomain, reqInfo.Domain)
+	ast.Equal(SandboxClientID, reqInfo.ClientID)
+	ast.Equal(SandboxClientSecret, reqInfo.ClientSecret)
+
+	// 데모
+	codef.SetClientInfoForDemo("demoID", "demoSecret")
+	reqInfo = codef.getReqInfoByServiceType(TypeDemo)
+	ast.Equal(DemoDomain, reqInfo.Domain)
+	ast.Equal(codef.DemoClientID, reqInfo.ClientID)
+	ast.Equal(codef.DemoClientSecret, reqInfo.ClientSecret)
+
+	// 정식버전
+	codef.SetClientInfo("productID", "productSecret")
+	reqInfo = codef.getReqInfoByServiceType(TypeProduct)
+	ast.Equal(APIDomain, reqInfo.Domain)
+	ast.Equal(codef.ClientID, reqInfo.ClientID)
+	ast.Equal(codef.ClientSecret, reqInfo.ClientSecret)
 }

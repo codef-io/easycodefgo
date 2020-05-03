@@ -7,35 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// getReqInfoByServiceType 테스트
-func TestGetReqInfoByServiceType(t *testing.T) {
-	ast := assert.New(t)
-
-	// 샌드박스
-	domain, id, secret := getReqInfoByServiceType(TypeSandbox)
-	ast.Equal(SandboxDomain, domain)
-	ast.Equal(SandboxClientID, id)
-	ast.Equal(SandboxClientSecret, secret)
-
-	// 데모
-	SetClientInfoForDemo("demoID", "demoSecret")
-	domain, id, secret = getReqInfoByServiceType(TypeDemo)
-	ast.Equal(DemoDomain, domain)
-	ast.Equal(DemoClientID, id)
-	ast.Equal(DemoClientSecret, secret)
-
-	// 정식버전
-	SetClientInfo("productID", "productSecret")
-	domain, id, secret = getReqInfoByServiceType(TypeProduct)
-	ast.Equal(APIDomain, domain)
-	ast.Equal(ClientID, id)
-	ast.Equal(ClientSecret, secret)
-
-	// 초기화
-	SetClientInfoForDemo("", "")
-	SetClientInfo("", "")
-}
-
 // 액세스 토큰 요청 테스트
 func TestRequestToken(t *testing.T) {
 	ast := assert.New(t)
@@ -52,12 +23,11 @@ func TestRequestToken(t *testing.T) {
 // 토큰 셋팅 테스트
 func TestSetToken(t *testing.T) {
 	ast := assert.New(t)
-	err := setToken(SandboxClientID, SandboxClientSecret, &AccessToken)
-	ast.NoError(err)
-	ast.NotEmpty(AccessToken)
+	codef := &Codef{}
 
-	// 초기화
-	AccessToken = ""
+	err := setToken(SandboxClientID, SandboxClientSecret, &codef.AccessToken)
+	ast.NoError(err)
+	ast.NotEmpty(codef.AccessToken)
 }
 
 // requestProduct 테스트
@@ -88,10 +58,13 @@ func TestRequestProduct(t *testing.T) {
 // execute 테스트
 func TestExecute(t *testing.T) {
 	ast := assert.New(t)
+	codef := &Codef{}
+
 	param, err := createParamForCreateConnectedID()
 	ast.NoError(err)
 
-	res, err := execute(PathCreateAccount, param, TypeSandbox)
+	reqInfo := codef.getReqInfoByServiceType(TypeSandbox)
+	res, err := execute(PathCreateAccount, param, &codef.AccessToken, reqInfo)
 	ast.NoError(err)
 
 	testExistConnectedID(ast, res)

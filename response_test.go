@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dc7303/easycodefgo/message"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,21 +11,21 @@ import (
 func TestNewResponseByMessage(t *testing.T) {
 	ast := assert.New(t)
 
-	res := newResponseByMessage(message.NotFound)
+	res := newResponseByMessage(messageNotFound)
 	data := res.GetData()
 	ast.NotNil(data)
 
 	result := res.GetResult()
 	ast.NotNil(result)
 
-	testResponseGetMessageInfo(ast, res, message.NotFound)
+	testResponseGetMessageInfo(ast, res, messageNotFound)
 }
 
 // Response.GetMessageInfo 테스트
 func testResponseGetMessageInfo(
 	ast *assert.Assertions,
 	res *Response,
-	m *message.MessageConstant,
+	m *messageConstant,
 ) {
 	code, msg, extraMsg := res.GetMessageInfo()
 	ast.Equal(m.Code, code)
@@ -51,15 +49,15 @@ func TestNewResponseByMap(t *testing.T) {
 func TestWriteValueAsString(t *testing.T) {
 	ast := assert.New(t)
 
-	res := newResponseByMessage(message.OK)
+	res := newResponseByMessage(messageOK)
 	str := res.WriteValueAsString()
 
 	// 원하는 결과
 	s := fmt.Sprintf(
 		`{"data":{},"result":{"code":"%s","extraMessage":"%s","message":"%s"}}`,
-		message.OK.Code,
-		message.OK.ExtraMessage,
-		message.OK.Message,
+		messageOK.Code,
+		messageOK.ExtraMessage,
+		messageOK.Message,
 	)
 	ast.Equal(str, s)
 }
