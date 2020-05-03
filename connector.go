@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"net/url"
 	"time"
-
-	"github.com/dc7303/easycodefgo/message"
 )
 
 // CODEF API 요청 실행
@@ -148,14 +146,14 @@ func requestProduct(reqURL, token, bodyStr string) (*Response, error) {
 
 		return newResponseByMap(m), nil
 	case http.StatusBadRequest:
-		return newResponseByMessage(message.BadRequest), nil
+		return newResponseByMessage(messageBadRequest), nil
 	case http.StatusUnauthorized:
-		return newResponseByMessage(message.Unauthorized), nil
+		return newResponseByMessage(messageUnauthorized), nil
 	case http.StatusForbidden:
-		return newResponseByMessage(message.Forbidden), nil
+		return newResponseByMessage(messageForbidden), nil
 	case http.StatusNotFound:
-		return newResponseByMessage(message.NotFound), nil
+		return newResponseByMessage(messageNotFound), nil
 	default:
-		return newResponseByMessage(message.ServerError), nil
+		return newResponseByMessage(messageServerError), nil
 	}
 }

@@ -1,9 +1,5 @@
 package easycodefgo
 
-import (
-	msg "github.com/dc7303/easycodefgo/message"
-)
-
 // CODEF API
 type Codef struct {
 	AccessToken      string // OAUTH2.0 토큰
@@ -31,14 +27,14 @@ func (self *Codef) RequestProduct(
 	// 클라이언트 정보 체크
 	validFlag = self.checkClientInfo(serviceType)
 	if !validFlag {
-		res := newResponseByMessage(msg.EmptyClientInfo)
+		res := newResponseByMessage(messageEmptyClientInfo)
 		return res.WriteValueAsString(), nil
 	}
 
 	// 추가인증 키워드 체크
 	validFlag = checkTwoWayKeyword(param)
 	if !validFlag {
-		res := newResponseByMessage(msg.Invalid2WayKeyword)
+		res := newResponseByMessage(messageInvalid2WayKeyword)
 		return res.WriteValueAsString(), nil
 	}
 

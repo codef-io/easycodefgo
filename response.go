@@ -2,8 +2,6 @@ package easycodefgo
 
 import (
 	"encoding/json"
-
-	msg "github.com/dc7303/easycodefgo/message"
 )
 
 type Response map[string]interface{}
@@ -27,7 +25,7 @@ func (self *Response) WriteValueAsString() string {
 }
 
 // message 정보로 Response 생성 메소드
-func newResponseByMessage(message *msg.MessageConstant) *Response {
+func newResponseByMessage(message *messageConstant) *Response {
 	result := map[string]interface{}{
 		KeyCode:         message.Code,
 		KeyMessage:      message.Message,
