@@ -10,15 +10,15 @@ import (
 func TestCheckClientInfo(t *testing.T) {
 	ast := assert.New(t)
 	// 샌드박스는 클라이언트 정보가 상수로 입력되어 있어 True
-	b := checkClientInfo(StatusSandbox)
+	b := checkClientInfo(TypeSandbox)
 	ast.True(b)
 
 	// 정식버전에는 클라이언트 정보 입력이 필요하다
-	b = checkClientInfo(StatusProduct)
+	b = checkClientInfo(TypeProduct)
 	ast.False(b)
 
 	SetClientInfo("test", "test")
-	b = checkClientInfo(StatusProduct)
+	b = checkClientInfo(TypeProduct)
 	ast.True(b)
 
 	// 초기화

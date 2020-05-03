@@ -18,7 +18,7 @@ import (
 func execute(
 	urlPath string,
 	body map[string]interface{},
-	serviceType ServiceStatus,
+	serviceType ServiceType,
 ) (*Response, error) {
 	domain, clientID, clientSecret := getReqInfoByServiceType(serviceType)
 
@@ -43,11 +43,11 @@ func execute(
 
 // 서비스 상태에 해당하는 요청 정보를 가져온다
 // return (domain, clientID, clientSecret)
-func getReqInfoByServiceType(serviceType ServiceStatus) (string, string, string) {
+func getReqInfoByServiceType(serviceType ServiceType) (string, string, string) {
 	switch serviceType {
-	case StatusProduct:
+	case TypeProduct:
 		return APIDomain, ClientID, ClientSecret
-	case StatusDemo:
+	case TypeDemo:
 		return DemoDomain, DemoClientID, DemoClientSecret
 	default:
 		return SandboxDomain, SandboxClientID, SandboxClientSecret

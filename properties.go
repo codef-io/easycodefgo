@@ -28,12 +28,12 @@ const (
 	KeyAccessDenied = "accessDenied" // 엑세스 토큰 거절 사유2
 )
 
-type ServiceStatus int
+type ServiceType int // 코드에프 이용 서비스 타입 정보
 
 const (
-	StatusProduct ServiceStatus = iota // 정식버전
-	StatusDemo                         // 데모 버전
-	StatusSandbox                      // 샌드박스
+	TypeProduct ServiceType = iota // 정식버전
+	TypeDemo                       // 데모 버전
+	TypeSandbox                    // 샌드박스
 )
 
 var (
@@ -46,11 +46,11 @@ var (
 )
 
 // 클라이언트 아이디
-func getCodefDomain(serviceType ServiceStatus) string {
+func getCodefDomain(serviceType ServiceType) string {
 	switch serviceType {
-	case StatusProduct:
+	case TypeProduct:
 		return APIDomain
-	case StatusDemo:
+	case TypeDemo:
 		return DemoDomain
 	default:
 		return SandboxDomain
@@ -58,11 +58,11 @@ func getCodefDomain(serviceType ServiceStatus) string {
 }
 
 // 클라이언트 시크릿 반환
-func getClientSecret(serviceType ServiceStatus) string {
+func getClientSecret(serviceType ServiceType) string {
 	switch serviceType {
-	case StatusProduct:
+	case TypeProduct:
 		return ClientSecret
-	case StatusDemo:
+	case TypeDemo:
 		return DemoClientSecret
 	default:
 		return SandboxClientSecret

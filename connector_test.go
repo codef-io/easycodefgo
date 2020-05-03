@@ -12,21 +12,21 @@ func TestGetReqInfoByServiceType(t *testing.T) {
 	ast := assert.New(t)
 
 	// 샌드박스
-	domain, id, secret := getReqInfoByServiceType(StatusSandbox)
+	domain, id, secret := getReqInfoByServiceType(TypeSandbox)
 	ast.Equal(SandboxDomain, domain)
 	ast.Equal(SandboxClientID, id)
 	ast.Equal(SandboxClientSecret, secret)
 
 	// 데모
 	SetClientInfoForDemo("demoID", "demoSecret")
-	domain, id, secret = getReqInfoByServiceType(StatusDemo)
+	domain, id, secret = getReqInfoByServiceType(TypeDemo)
 	ast.Equal(DemoDomain, domain)
 	ast.Equal(DemoClientID, id)
 	ast.Equal(DemoClientSecret, secret)
 
 	// 정식버전
 	SetClientInfo("productID", "productSecret")
-	domain, id, secret = getReqInfoByServiceType(StatusProduct)
+	domain, id, secret = getReqInfoByServiceType(TypeProduct)
 	ast.Equal(APIDomain, domain)
 	ast.Equal(ClientID, id)
 	ast.Equal(ClientSecret, secret)
@@ -91,7 +91,7 @@ func TestExecute(t *testing.T) {
 	param, err := createParamForCreateConnectedID()
 	ast.NoError(err)
 
-	res, err := execute(PathCreateAccount, param, StatusSandbox)
+	res, err := execute(PathCreateAccount, param, TypeSandbox)
 	ast.NoError(err)
 
 	testExistConnectedID(ast, res)

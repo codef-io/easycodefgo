@@ -5,7 +5,7 @@ import msg "github.com/dc7303/easycodefgo/message"
 // 상품 요청
 func RequestProduct(
 	productURL string,
-	serviceType ServiceStatus,
+	serviceType ServiceType,
 	param map[string]interface{},
 ) (string, error) {
 	validFlag := true
@@ -38,13 +38,13 @@ func RequestProduct(
 }
 
 // 클라이언트 정보 검사
-func checkClientInfo(serviceType ServiceStatus) bool {
+func checkClientInfo(serviceType ServiceType) bool {
 	switch serviceType {
-	case StatusProduct:
+	case TypeProduct:
 		if TrimAll(ClientID) == "" || TrimAll(ClientSecret) == "" {
 			return false
 		}
-	case StatusDemo:
+	case TypeDemo:
 		if TrimAll(DemoClientID) == "" || TrimAll(DemoClientSecret) == "" {
 			return false
 		}
@@ -76,41 +76,41 @@ func checkTwoWayKeyword(param map[string]interface{}) bool {
 }
 
 // connectedID 발급을 위한 계정 등록
-func CreateAccount(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
+func CreateAccount(serviceType ServiceType, param map[string]interface{}) (string, error) {
 	return RequestProduct(PathCreateAccount, serviceType, param)
 }
 
 // 게정 정보 추가
-func AddAccount(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
+func AddAccount(serviceType ServiceType, param map[string]interface{}) (string, error) {
 	return RequestProduct(PathAddAccount, serviceType, param)
 }
 
 // 계정 정보 수정
-func UpdateAccount(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
+func UpdateAccount(serviceType ServiceType, param map[string]interface{}) (string, error) {
 	return RequestProduct(PathUpdateAccount, serviceType, param)
 }
 
 // 계정 정보 삭제
-func DeleteAccount(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
+func DeleteAccount(serviceType ServiceType, param map[string]interface{}) (string, error) {
 	return RequestProduct(PathDeleteAccount, serviceType, param)
 }
 
 // connectedID로 등록된 계정 목록 조회
-func GetAccountList(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
+func GetAccountList(serviceType ServiceType, param map[string]interface{}) (string, error) {
 	return RequestProduct(PathGetAccountList, serviceType, param)
 }
 
 // 클라이언트 정보로 등록된 모든 connectedID 목록 조회
-func GetConnectedIDList(serviceType ServiceStatus, param map[string]interface{}) (string, error) {
+func GetConnectedIDList(serviceType ServiceType, param map[string]interface{}) (string, error) {
 	return RequestProduct(PathGetCIDList, serviceType, param)
 }
 
 // 토큰 발급
-func RequestToken(serviceType ServiceStatus) (map[string]interface{}, error) {
+func RequestToken(serviceType ServiceType) (map[string]interface{}, error) {
 	switch serviceType {
-	case StatusProduct:
+	case TypeProduct:
 		return requestToken(ClientID, ClientSecret)
-	case StatusDemo:
+	case TypeDemo:
 		return requestToken(DemoClientID, DemoClientSecret)
 	default:
 		return requestToken(SandboxClientID, SandboxClientSecret)

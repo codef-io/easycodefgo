@@ -10,15 +10,15 @@ import (
 func TestGetCodefDomain(t *testing.T) {
 	ast := assert.New(t)
 	// default 테스트
-	domain := getCodefDomain(StatusSandbox)
+	domain := getCodefDomain(TypeSandbox)
 	ast.Equal(domain, SandboxDomain)
 
 	// demo 테스트
-	domain = getCodefDomain(StatusDemo)
+	domain = getCodefDomain(TypeDemo)
 	ast.Equal(domain, DemoDomain)
 
 	// product 테스트
-	domain = getCodefDomain(StatusProduct)
+	domain = getCodefDomain(TypeProduct)
 	ast.Equal(domain, APIDomain)
 }
 
@@ -26,14 +26,14 @@ func TestGetCodefDomain(t *testing.T) {
 func TestGetClientSecret(t *testing.T) {
 	ast := assert.New(t)
 	// default 테스트
-	key := getClientSecret(StatusSandbox)
+	key := getClientSecret(TypeSandbox)
 	ast.Equal(key, SandboxClientSecret)
 
 	// demo 테스트
-	key = getClientSecret(StatusDemo)
+	key = getClientSecret(TypeDemo)
 	ast.Equal(key, DemoClientSecret)
 
 	// product 테스트
-	key = getClientSecret(StatusProduct)
+	key = getClientSecret(TypeProduct)
 	ast.Equal(key, ClientSecret)
 }
