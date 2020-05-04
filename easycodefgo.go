@@ -1,6 +1,9 @@
 package easycodefgo
 
-import "reflect"
+import (
+	"errors"
+	"reflect"
+)
 
 // CODEF API
 type Codef struct {
@@ -133,6 +136,10 @@ func (self *Codef) GetConnectedIDList(serviceType ServiceType) (string, error) {
 
 // 토큰 발급
 func (self *Codef) RequestToken(serviceType ServiceType) (map[string]interface{}, error) {
+	existClientInfo := self.checkClientInfo(serviceType)
+	if !existClientInfo {
+		return nil, errors.New("The ClientID and ClientSecret values ​​are empty. Please set the value according to the service type.")
+	}
 	switch serviceType {
 	case TypeProduct:
 		return requestToken(self.clientID, self.clientSecret)

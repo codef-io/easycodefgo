@@ -192,3 +192,13 @@ func TestCheckNeedValueInTwoWayInfo(t *testing.T) {
 	ok = checkNeedValueInTwoWayInfo(twoWayInfo)
 	ast.False(ok)
 }
+
+// ReuqestToken 요청 클라이언트 정보가 입력되지 않았을 때 에러 처리
+func TestRequestTokenByEmptyClientInfo(t *testing.T) {
+	ast := assert.New(t)
+
+	codef := &Codef{}
+	result, err := codef.RequestToken(TypeDemo)
+	ast.Error(err)
+	ast.Empty(result)
+}
