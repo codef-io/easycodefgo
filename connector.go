@@ -19,7 +19,7 @@ func execute(
 	accessToken *string,
 	reqInfo *requestInfo,
 ) (*Response, error) {
-	err := setToken(reqInfo.ClientID, reqInfo.ClientSecret, accessToken)
+	err := setToken(reqInfo.clientID, reqInfo.clientSecret, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func execute(
 	}
 	encBodyStr := url.QueryEscape(string(b))
 
-	res, err := requestProduct(reqInfo.Domain+urlPath, *accessToken, encBodyStr)
+	res, err := requestProduct(reqInfo.domain+urlPath, *accessToken, encBodyStr)
 	if err != nil {
 		return nil, err
 	}

@@ -1,19 +1,21 @@
 package easycodefgo
 
+import "reflect"
+
 // CODEF API
 type Codef struct {
-	AccessToken      string // OAUTH2.0 토큰
-	DemoClientID     string // 데모 엑세스 토큰 밝브을 위한 클라이언트 아이디
-	DemoClientSecret string // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
-	ClientID         string // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
-	ClientSecret     string // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
+	accessToken      string // OAUTH2.0 토큰
+	demoClientID     string // 데모 엑세스 토큰 밝브을 위한 클라이언트 아이디
+	demoClientSecret string // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
+	clientID         string // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
+	clientSecret     string // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
 }
 
 // 요청 정보
 type requestInfo struct {
-	Domain       string
-	ClientID     string
-	ClientSecret string
+	domain       string
+	clientID     string
+	clientSecret string
 }
 
 // 상품 요청
@@ -40,10 +42,43 @@ func (self *Codef) RequestProduct(
 
 	reqInfo := self.getReqInfoByServiceType(serviceType)
 
-	res, err := execute(productPath, param, &self.AccessToken, reqInfo)
+	res, err := execute(productPath, param, &self.accessToken, reqInfo)
 	if err != nil {
 		return "", err
 	}
+	return res.WriteValueAsString(), nil
+}
+
+// 상품 추가인증 요청
+func (self *Codef) RequestCertification(
+	productPath string,
+	serviceType ServiceType,
+	param map[string]interface{},
+) (string, error) {
+	validFlag := true
+
+	// 클라이언트 정보 체크
+	validFlag = self.checkClientInfo(serviceType)
+	if !validFlag {
+		res := newResponseByMessage(messageEmptyClientInfo)
+		return res.WriteValueAsString(), nil
+	}
+
+	// 추가인증 파라미터 필수 입력 체크
+	validFlag = checkTwoWayInfo(param)
+	if !validFlag {
+		res := newResponseByMessage(messageInvalid2WayInfo)
+		return res.WriteValueAsString(), nil
+	}
+
+	reqInfo := self.getReqInfoByServiceType(serviceType)
+
+	// 상품 조회 요청
+	res, err := execute(productPath, param, &self.accessToken, reqInfo)
+	if err != nil {
+		return "", err
+	}
+
 	return res.WriteValueAsString(), nil
 }
 
@@ -51,11 +86,11 @@ func (self *Codef) RequestProduct(
 func (self *Codef) checkClientInfo(serviceType ServiceType) bool {
 	switch serviceType {
 	case TypeProduct:
-		if TrimAll(self.ClientID) == "" || TrimAll(self.ClientSecret) == "" {
+		if TrimAll(self.clientID) == "" || TrimAll(self.clientSecret) == "" {
 			return false
 		}
 	case TypeDemo:
-		if TrimAll(self.DemoClientID) == "" || TrimAll(self.DemoClientSecret) == "" {
+		if TrimAll(self.demoClientID) == "" || TrimAll(self.demoClientSecret) == "" {
 			return false
 		}
 	default:
@@ -100,9 +135,9 @@ func (self *Codef) GetConnectedIDList(serviceType ServiceType) (string, error) {
 func (self *Codef) RequestToken(serviceType ServiceType) (map[string]interface{}, error) {
 	switch serviceType {
 	case TypeProduct:
-		return requestToken(self.ClientID, self.ClientSecret)
+		return requestToken(self.clientID, self.clientSecret)
 	case TypeDemo:
-		return requestToken(self.DemoClientID, self.DemoClientSecret)
+		return requestToken(self.demoClientID, self.demoClientSecret)
 	default:
 		return requestToken(SandboxClientID, SandboxClientSecret)
 	}
@@ -112,9 +147,9 @@ func (self *Codef) RequestToken(serviceType ServiceType) (map[string]interface{}
 func (self *Codef) getClientSecret(serviceType ServiceType) string {
 	switch serviceType {
 	case TypeProduct:
-		return self.ClientSecret
+		return self.clientSecret
 	case TypeDemo:
-		return self.DemoClientSecret
+		return self.demoClientSecret
 	default:
 		return SandboxClientSecret
 	}
@@ -122,14 +157,14 @@ func (self *Codef) getClientSecret(serviceType ServiceType) string {
 
 // 정식서버 사용을 위한 클라이언트 정보 설정
 func (self *Codef) SetClientInfo(clientID, clientSecret string) {
-	self.ClientID = clientID
-	self.ClientSecret = clientSecret
+	self.clientID = clientID
+	self.clientSecret = clientSecret
 }
 
 // 데모 서버 사용을 위한 클라이언트 정보 설정
 func (self *Codef) SetClientInfoForDemo(clientId, clientSecret string) {
-	self.DemoClientID = clientId
-	self.DemoClientSecret = clientSecret
+	self.demoClientID = clientId
+	self.demoClientSecret = clientSecret
 }
 
 // 서비스 상태에 해당하는 요청 정보를 가져온다
@@ -137,9 +172,9 @@ func (self *Codef) SetClientInfoForDemo(clientId, clientSecret string) {
 func (self *Codef) getReqInfoByServiceType(serviceType ServiceType) *requestInfo {
 	switch serviceType {
 	case TypeProduct:
-		return &requestInfo{APIDomain, self.ClientID, self.ClientSecret}
+		return &requestInfo{APIDomain, self.clientID, self.clientSecret}
 	case TypeDemo:
-		return &requestInfo{DemoDomain, self.DemoClientID, self.DemoClientSecret}
+		return &requestInfo{DemoDomain, self.demoClientID, self.demoClientSecret}
 	default:
 		return &requestInfo{SandboxDomain, SandboxClientID, SandboxClientSecret}
 	}
@@ -151,6 +186,38 @@ func checkTwoWayKeyword(param map[string]interface{}) bool {
 		return false
 	}
 	if _, ok := param["twoWayInfo"]; ok {
+		return false
+	}
+	return true
+}
+
+// 2way 상품 요청 시 필수 데이터 체크
+func checkTwoWayInfo(param map[string]interface{}) bool {
+	is2Way, ok := param["is2Way"]
+	if !ok || reflect.TypeOf(is2Way).Kind() != reflect.Bool || !is2Way.(bool) {
+		return false
+	}
+
+	twoWayInfo, ok := param["twoWayInfo"].(map[string]interface{})
+	if !ok || twoWayInfo == nil {
+		return false
+	}
+
+	return checkNeedValueInTwoWayInfo(twoWayInfo)
+}
+
+// twoWayInfo 정보 내부에 필요한 데이터가 존재하는지 체크
+func checkNeedValueInTwoWayInfo(twoWayInfo map[string]interface{}) bool {
+	if _, ok := twoWayInfo["jobIndex"]; !ok {
+		return false
+	}
+	if _, ok := twoWayInfo["threadIndex"]; !ok {
+		return false
+	}
+	if _, ok := twoWayInfo["jti"]; !ok {
+		return false
+	}
+	if _, ok := twoWayInfo["twoWayTimestamp"]; !ok {
 		return false
 	}
 	return true

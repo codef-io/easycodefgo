@@ -25,9 +25,9 @@ func TestSetToken(t *testing.T) {
 	ast := assert.New(t)
 	codef := &Codef{}
 
-	err := setToken(SandboxClientID, SandboxClientSecret, &codef.AccessToken)
+	err := setToken(SandboxClientID, SandboxClientSecret, &codef.accessToken)
 	ast.NoError(err)
-	ast.NotEmpty(codef.AccessToken)
+	ast.NotEmpty(codef.accessToken)
 }
 
 // requestProduct 테스트
@@ -64,7 +64,7 @@ func TestExecute(t *testing.T) {
 	ast.NoError(err)
 
 	reqInfo := codef.getReqInfoByServiceType(TypeSandbox)
-	res, err := execute(PathCreateAccount, param, &codef.AccessToken, reqInfo)
+	res, err := execute(PathCreateAccount, param, &codef.accessToken, reqInfo)
 	ast.NoError(err)
 
 	testExistConnectedID(ast, res)

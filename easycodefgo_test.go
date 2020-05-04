@@ -36,11 +36,11 @@ func TestGetClientSecret(t *testing.T) {
 
 	// demo 테스트
 	key = codef.getClientSecret(TypeDemo)
-	ast.Equal(key, codef.DemoClientSecret)
+	ast.Equal(key, codef.demoClientSecret)
 
 	// product 테스트
 	key = codef.getClientSecret(TypeProduct)
-	ast.Equal(key, codef.ClientSecret)
+	ast.Equal(key, codef.clientSecret)
 }
 
 // 2Way 키워드 존재 여부 확인
@@ -114,21 +114,81 @@ func TestGetReqInfoByServiceType(t *testing.T) {
 	codef := &Codef{}
 	// 샌드박스
 	reqInfo := codef.getReqInfoByServiceType(TypeSandbox)
-	ast.Equal(SandboxDomain, reqInfo.Domain)
-	ast.Equal(SandboxClientID, reqInfo.ClientID)
-	ast.Equal(SandboxClientSecret, reqInfo.ClientSecret)
+	ast.Equal(SandboxDomain, reqInfo.domain)
+	ast.Equal(SandboxClientID, reqInfo.clientID)
+	ast.Equal(SandboxClientSecret, reqInfo.clientSecret)
 
 	// 데모
 	codef.SetClientInfoForDemo("demoID", "demoSecret")
 	reqInfo = codef.getReqInfoByServiceType(TypeDemo)
-	ast.Equal(DemoDomain, reqInfo.Domain)
-	ast.Equal(codef.DemoClientID, reqInfo.ClientID)
-	ast.Equal(codef.DemoClientSecret, reqInfo.ClientSecret)
+	ast.Equal(DemoDomain, reqInfo.domain)
+	ast.Equal(codef.demoClientID, reqInfo.clientID)
+	ast.Equal(codef.demoClientSecret, reqInfo.clientSecret)
 
 	// 정식버전
 	codef.SetClientInfo("productID", "productSecret")
 	reqInfo = codef.getReqInfoByServiceType(TypeProduct)
-	ast.Equal(APIDomain, reqInfo.Domain)
-	ast.Equal(codef.ClientID, reqInfo.ClientID)
-	ast.Equal(codef.ClientSecret, reqInfo.ClientSecret)
+	ast.Equal(APIDomain, reqInfo.domain)
+	ast.Equal(codef.clientID, reqInfo.clientID)
+	ast.Equal(codef.clientSecret, reqInfo.clientSecret)
+}
+
+// checkTwoWayInfo 테스트
+func TestCheckTwoWayInfo(t *testing.T) {
+	ast := assert.New(t)
+
+	twoWayInfo := map[string]interface{}{
+		"jobIndex":        "1",
+		"threadIndex":     "1",
+		"jti":             "",
+		"twoWayTimestamp": "",
+	}
+	param := map[string]interface{}{
+		"is2Way":     "string",
+		"twoWayInfo": twoWayInfo,
+	}
+
+	// bool 타입이 아닐때
+	ok := checkTwoWayInfo(param)
+	ast.False(ok)
+
+	// is2Way가 false일 때
+	param["is2Way"] = false
+	ok = checkTwoWayInfo(param)
+	ast.False(ok)
+
+	// 정상 작동
+	param["is2Way"] = true
+	ok = checkTwoWayInfo(param)
+	ast.True(ok)
+
+	// twoWayInfo가 맵으로 캐스팅 되지 않을 때
+	param["twoWayInfo"] = "string"
+	ok = checkTwoWayInfo(param)
+	ast.False(ok)
+
+	// twoWayInfo가 nil일 때
+	param["twoWayInfo"] = nil
+	ok = checkTwoWayInfo(param)
+	ast.False(ok)
+}
+
+// checkNeedValueInTwoWayInfo 테스트
+func TestCheckNeedValueInTwoWayInfo(t *testing.T) {
+	ast := assert.New(t)
+
+	twoWayInfo := map[string]interface{}{
+		"jobIndex":        "1",
+		"threadIndex":     "1",
+		"jti":             "",
+		"twoWayTimestamp": "",
+	}
+	// 정상 작동
+	ok := checkNeedValueInTwoWayInfo(twoWayInfo)
+	ast.True(ok)
+
+	// jobIndex가 없을 때
+	delete(twoWayInfo, "jobIndex")
+	ok = checkNeedValueInTwoWayInfo(twoWayInfo)
+	ast.False(ok)
 }
