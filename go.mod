@@ -1,4 +1,4 @@
-module github.com/dc7303/easycodefgo
+module gitlab.codef.io/codef-io-dev/easycodefgo.git
 
 go 1.13
 
