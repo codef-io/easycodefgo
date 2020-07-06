@@ -5,13 +5,20 @@ import (
 	"reflect"
 )
 
+// 액세스 토큰 관리 구조체
+type accessToken struct {
+	product string
+	demo    string
+	sandbox string
+}
+
 // CODEF API
 type Codef struct {
-	accessToken      string // OAUTH2.0 토큰
-	demoClientID     string // 데모 엑세스 토큰 밝브을 위한 클라이언트 아이디
-	demoClientSecret string // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
-	clientID         string // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
-	clientSecret     string // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
+	accessToken      accessToken // OAUTH2.0 토큰
+	demoClientID     string      // 데모 엑세스 토큰 밝브을 위한 클라이언트 아이디
+	demoClientSecret string      // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
+	clientID         string      // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
+	clientSecret     string      // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
 }
 
 // 요청 정보
@@ -45,7 +52,7 @@ func (self *Codef) RequestProduct(
 
 	reqInfo := self.getReqInfoByServiceType(serviceType)
 
-	res, err := execute(productPath, param, &self.accessToken, reqInfo)
+	res, err := execute(productPath, param, self.getAccessToken(serviceType), reqInfo)
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +84,7 @@ func (self *Codef) RequestCertification(
 	reqInfo := self.getReqInfoByServiceType(serviceType)
 
 	// 상품 조회 요청
-	res, err := execute(productPath, param, &self.accessToken, reqInfo)
+	res, err := execute(productPath, param, self.getAccessToken(serviceType), reqInfo)
 	if err != nil {
 		return "", err
 	}
@@ -172,6 +179,30 @@ func (self *Codef) SetClientInfo(clientID, clientSecret string) {
 func (self *Codef) SetClientInfoForDemo(clientId, clientSecret string) {
 	self.demoClientID = clientId
 	self.demoClientSecret = clientSecret
+}
+
+// 액세스 토큰 정보 셋팅
+func (self *Codef) SetAccessToken(accessToken string, serviceType ServiceType) {
+	switch serviceType {
+	case TypeProduct:
+		self.accessToken.product = accessToken
+	case TypeDemo:
+		self.accessToken.demo = accessToken
+	default:
+		self.accessToken.sandbox = accessToken
+	}
+}
+
+// 액세스 토큰 정보 셋팅
+func (self *Codef) getAccessToken(serviceType ServiceType) *string {
+	switch serviceType {
+	case TypeProduct:
+		return &self.accessToken.product
+	case TypeDemo:
+		return &self.accessToken.demo
+	default:
+		return &self.accessToken.sandbox
+	}
 }
 
 // 서비스 상태에 해당하는 요청 정보를 가져온다

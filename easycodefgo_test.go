@@ -202,3 +202,21 @@ func TestRequestTokenByEmptyClientInfo(t *testing.T) {
 	ast.Error(err)
 	ast.Empty(result)
 }
+
+// 서비스 타입별 API 요청 관리가 가능한지 확인을 위한 테스트
+// 비동기 상황에서 서비스 타입을 혼합해서 사용할 경우 에러 방지를 위함
+func TestSetAccessToken(t *testing.T) {
+	ast := assert.New(t)
+
+	codef := &Codef{}
+	res, _ := codef.RequestToken(TypeSandbox)
+	token := res["access_token"].(string)
+	ast.NotEmpty(token)
+
+	codef.SetAccessToken(token, TypeSandbox)
+	ast.NotEmpty(codef.getAccessToken(TypeSandbox))
+	codef.SetAccessToken(token, TypeDemo)
+	ast.NotEmpty(codef.getAccessToken(TypeDemo))
+	codef.SetAccessToken(token, TypeProduct)
+	ast.NotEmpty(codef.getAccessToken(TypeProduct))
+}
