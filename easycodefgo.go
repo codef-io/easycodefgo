@@ -19,6 +19,7 @@ type Codef struct {
 	demoClientSecret string      // 데모 엑세스 토큰 밝브을 위한 클라이언트 시크릿
 	clientID         string      // 정식 엑세스 토큰 발급을 위한 클라이언트 아이디
 	clientSecret     string      // 정식 엑세스 토큰 발급을 위한 클라이언트 시크릿
+	PublicKey        string      // 유저 퍼블릭키
 }
 
 // 요청 정보
@@ -34,18 +35,21 @@ func (self *Codef) RequestProduct(
 	serviceType ServiceType,
 	param map[string]interface{},
 ) (string, error) {
-	validFlag := true
 
 	// 클라이언트 정보 체크
-	validFlag = self.checkClientInfo(serviceType)
-	if !validFlag {
+	if !self.checkClientInfo(serviceType) {
 		res := newResponseByMessage(messageEmptyClientInfo)
 		return res.WriteValueAsString(), nil
 	}
 
+	// 퍼블릭키 정보 체크
+	if TrimAll(self.PublicKey) == "" {
+		res := newResponseByMessage(messageEmptyPublicKey)
+		return res.WriteValueAsString(), nil
+	}
+
 	// 추가인증 키워드 체크
-	validFlag = checkTwoWayKeyword(param)
-	if !validFlag {
+	if !checkTwoWayKeyword(param) {
 		res := newResponseByMessage(messageInvalid2WayKeyword)
 		return res.WriteValueAsString(), nil
 	}
@@ -65,18 +69,21 @@ func (self *Codef) RequestCertification(
 	serviceType ServiceType,
 	param map[string]interface{},
 ) (string, error) {
-	validFlag := true
 
 	// 클라이언트 정보 체크
-	validFlag = self.checkClientInfo(serviceType)
-	if !validFlag {
+	if !self.checkClientInfo(serviceType) {
 		res := newResponseByMessage(messageEmptyClientInfo)
 		return res.WriteValueAsString(), nil
 	}
 
+	// 퍼블릭키 정보 체크
+	if TrimAll(self.PublicKey) == "" {
+		res := newResponseByMessage(messageEmptyPublicKey)
+		return res.WriteValueAsString(), nil
+	}
+
 	// 추가인증 파라미터 필수 입력 체크
-	validFlag = checkTwoWayInfo(param)
-	if !validFlag {
+	if !checkTwoWayInfo(param) {
 		res := newResponseByMessage(messageInvalid2WayInfo)
 		return res.WriteValueAsString(), nil
 	}

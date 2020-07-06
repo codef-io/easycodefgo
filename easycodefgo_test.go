@@ -68,6 +68,8 @@ func TestRequestProductBySandbox(t *testing.T) {
 	ast := assert.New(t)
 
 	codef := &Codef{}
+	codef.PublicKey = "public_key"
+
 	// 테스트 데이터 생성
 	param, err := createParamForCreateConnectedID()
 	ast.NoError(err)
@@ -219,4 +221,29 @@ func TestSetAccessToken(t *testing.T) {
 	ast.NotEmpty(codef.getAccessToken(TypeDemo))
 	codef.SetAccessToken(token, TypeProduct)
 	ast.NotEmpty(codef.getAccessToken(TypeProduct))
+}
+
+// 퍼블릭키 체크 테스트
+func TestEmptyPublicKeyError(t *testing.T) {
+	ast := assert.New(t)
+	codef := &Codef{}
+	accountList := []map[string]interface{}{
+		map[string]interface{}{
+			"countryCode":  "KR",
+			"businessType": "BK",
+			"clientType":   "P",
+			"organization": "0004",
+			"loginType":    "1",
+			"id":           "user_id",
+		},
+	}
+
+	res, err := codef.CreateAccount(TypeSandbox, map[string]interface{}{
+		"accountList": accountList,
+	})
+	ast.NoError(err)
+
+	data := map[string]interface{}{}
+	json.Unmarshal([]byte(res), &data)
+	ast.Equal((data["result"].(map[string]interface{}))["code"], "CF-00015")
 }
