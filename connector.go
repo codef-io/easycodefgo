@@ -95,8 +95,9 @@ func requestToken(clientID, clientSecret string) (map[string]interface{}, error)
 	}
 
 	m := make(map[string]interface{})
-	err = json.Unmarshal(resBody, &m)
-	if err != nil {
+	jsonDec := json.NewDecoder(bytes.NewBuffer([]byte(resBody)))
+	jsonDec.UseNumber()
+	if err := jsonDec.Decode(&m); err != nil {
 		return nil, err
 	}
 
@@ -139,8 +140,10 @@ func requestProduct(reqURL, token, bodyStr string) (*Response, error) {
 			return nil, err
 		}
 		m := make(map[string]interface{})
-		err = json.Unmarshal([]byte(resultData), &m)
-		if err != nil {
+
+		jsonDec := json.NewDecoder(bytes.NewBuffer([]byte(resultData)))
+		jsonDec.UseNumber()
+		if err := jsonDec.Decode(&m); err != nil {
 			return nil, err
 		}
 
