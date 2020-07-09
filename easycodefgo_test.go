@@ -43,23 +43,23 @@ func TestGetClientSecret(t *testing.T) {
 	ast.Equal(key, codef.clientSecret)
 }
 
-// 2Way 키워드 존재 여부 확인
-func TestCheckTwoWayKeyword(t *testing.T) {
+// 2Way 키워드 존재 여부 확인 테스트
+func TestIsEmptyTwoWayKeyword(t *testing.T) {
 	ast := assert.New(t)
 
 	m := map[string]interface{}{
 		"is2Way":     true,
 		"twoWayInfo": "info",
 	}
-	b := checkTwoWayKeyword(m)
+	b := isEmptyTwoWayKeyword(m)
 	ast.False(b)
 
 	delete(m, "is2Way")
-	b = checkTwoWayKeyword(m)
+	b = isEmptyTwoWayKeyword(m)
 	ast.False(b)
 
 	delete(m, "twoWayInfo")
-	b = checkTwoWayKeyword(m)
+	b = isEmptyTwoWayKeyword(m)
 	ast.True(b)
 }
 
@@ -135,8 +135,8 @@ func TestGetReqInfoByServiceType(t *testing.T) {
 	ast.Equal(codef.clientSecret, reqInfo.clientSecret)
 }
 
-// checkTwoWayInfo 테스트
-func TestCheckTwoWayInfo(t *testing.T) {
+// hasTwoWayInfo 테스트
+func TestHasTwoWayInfo(t *testing.T) {
 	ast := assert.New(t)
 
 	twoWayInfo := map[string]interface{}{
@@ -151,27 +151,27 @@ func TestCheckTwoWayInfo(t *testing.T) {
 	}
 
 	// bool 타입이 아닐때
-	ok := checkTwoWayInfo(param)
+	ok := hasTwoWayInfo(param)
 	ast.False(ok)
 
 	// is2Way가 false일 때
 	param["is2Way"] = false
-	ok = checkTwoWayInfo(param)
+	ok = hasTwoWayInfo(param)
 	ast.False(ok)
 
 	// 정상 작동
 	param["is2Way"] = true
-	ok = checkTwoWayInfo(param)
+	ok = hasTwoWayInfo(param)
 	ast.True(ok)
 
 	// twoWayInfo가 맵으로 캐스팅 되지 않을 때
 	param["twoWayInfo"] = "string"
-	ok = checkTwoWayInfo(param)
+	ok = hasTwoWayInfo(param)
 	ast.False(ok)
 
 	// twoWayInfo가 nil일 때
 	param["twoWayInfo"] = nil
-	ok = checkTwoWayInfo(param)
+	ok = hasTwoWayInfo(param)
 	ast.False(ok)
 }
 

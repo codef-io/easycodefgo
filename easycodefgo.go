@@ -49,7 +49,7 @@ func (self *Codef) RequestProduct(
 	}
 
 	// 추가인증 키워드 체크
-	if !checkTwoWayKeyword(param) {
+	if !isEmptyTwoWayKeyword(param) {
 		res := newResponseByMessage(messageInvalid2WayKeyword)
 		return res.WriteValueAsString(), nil
 	}
@@ -83,7 +83,7 @@ func (self *Codef) RequestCertification(
 	}
 
 	// 추가인증 파라미터 필수 입력 체크
-	if !checkTwoWayInfo(param) {
+	if !hasTwoWayInfo(param) {
 		res := newResponseByMessage(messageInvalid2WayInfo)
 		return res.WriteValueAsString(), nil
 	}
@@ -225,8 +225,8 @@ func (self *Codef) getReqInfoByServiceType(serviceType ServiceType) *requestInfo
 	}
 }
 
-// 2Way 키워드 존재 여부 확인
-func checkTwoWayKeyword(param map[string]interface{}) bool {
+// 2Way 키워드가 없는지 확인
+func isEmptyTwoWayKeyword(param map[string]interface{}) bool {
 	if _, ok := param["is2Way"]; ok {
 		return false
 	}
@@ -236,8 +236,8 @@ func checkTwoWayKeyword(param map[string]interface{}) bool {
 	return true
 }
 
-// 2way 상품 요청 시 필수 데이터 체크
-func checkTwoWayInfo(param map[string]interface{}) bool {
+// 2way 상품 요청 시 필수 데이터 존재하는지 확인
+func hasTwoWayInfo(param map[string]interface{}) bool {
 	is2Way, ok := param["is2Way"]
 	if !ok || reflect.TypeOf(is2Way).Kind() != reflect.Bool || !is2Way.(bool) {
 		return false
