@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"time"
 )
 
 // CODEF API 요청 실행
@@ -19,10 +18,7 @@ func execute(
 	accessToken *string,
 	reqInfo *requestInfo,
 ) (*Response, error) {
-	err := setToken(reqInfo.clientID, reqInfo.clientSecret, accessToken)
-	if err != nil {
-		return nil, err
-	}
+	setToken(reqInfo.clientID, reqInfo.clientSecret, accessToken)
 
 	b, err := json.Marshal(body)
 	if err != nil {
@@ -39,14 +35,15 @@ func execute(
 }
 
 // 액세스 토큰 셋팅
-func setToken(clientID, clientSecret string, accessToken *string) error {
+func setToken(clientID, clientSecret string, accessToken *string) {
 	repeatCount := 3
 	i := 0
 	if *accessToken == "" {
 		for i < repeatCount {
 			tokenMap, err := requestToken(clientID, clientSecret)
 			if err != nil {
-				return err
+				i++
+				continue
 			}
 			if token, ok := tokenMap["access_token"]; ok {
 				*accessToken = token.(string)
@@ -55,13 +52,9 @@ func setToken(clientID, clientSecret string, accessToken *string) error {
 			if *accessToken != "" {
 				break
 			}
-
-			time.Sleep(time.Millisecond * 20)
 			i++
 		}
 	}
-
-	return nil
 }
 
 // 액세스 토큰 요청

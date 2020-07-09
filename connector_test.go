@@ -2,6 +2,7 @@ package easycodefgo
 
 import (
 	"encoding/json"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -25,8 +26,7 @@ func TestSetToken(t *testing.T) {
 	ast := assert.New(t)
 	codef := &Codef{}
 
-	err := setToken(SandboxClientID, SandboxClientSecret, codef.getAccessToken(TypeSandbox))
-	ast.NoError(err)
+	setToken(SandboxClientID, SandboxClientSecret, codef.getAccessToken(TypeSandbox))
 	ast.NotEmpty(codef.accessToken)
 }
 
@@ -48,8 +48,7 @@ func TestRequestProduct(t *testing.T) {
 	ast.Empty(res.GetData())
 
 	// Connected ID 정상 발급 테스트
-	err = setToken(SandboxClientID, SandboxClientSecret, &accessToken)
-	ast.NoError(err)
+	setToken(SandboxClientID, SandboxClientSecret, &accessToken)
 
 	res, err = requestProduct(SandboxDomain+PathCreateAccount, accessToken, string(data))
 	testExistConnectedID(ast, res)
@@ -78,6 +77,31 @@ func testExistConnectedID(ast *assert.Assertions, res *Response) {
 	ast.True(ok)
 	_, ok = result["connectedId"]
 	ast.True(ok)
+}
+
+// SetToken에서 3회 요청 실패 시 빈 액세스 토큰으로 요청하게됨
+// 이때 응답결과 CF-00401이 발생해야함
+func TestFailSetTokenResult(t *testing.T) {
+	ast := assert.New(t)
+	codef := &Codef{PublicKey: "public_key"}
+
+	codef.SetClientInfo("id", "pri")
+
+	parameter := map[string]interface{}{
+		"connectedId":  "8PQI4dQ......hKLhTnZ",
+		"organization": "0004",
+		"identity":     "1130000627",
+	}
+	productURL := "/v1/kr/card/b/account/card-list" // 법인 보유카드 조회 URL
+	result, err := codef.RequestProduct(productURL, TypeProduct, parameter)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	jsonMap := make(map[string]interface{})
+	json.Unmarshal([]byte(result), &jsonMap)
+	resultData := jsonMap["result"].(map[string]interface{})
+	ast.Equal(resultData["code"], "CF-00401")
 }
 
 // ConnectedID 발급을 위한 Body 테스트 데이터 생성
