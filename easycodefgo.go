@@ -144,8 +144,8 @@ func (self *Codef) GetAccountList(serviceType ServiceType, param map[string]inte
 }
 
 // 클라이언트 정보로 등록된 모든 connectedID 목록 조회
-func (self *Codef) GetConnectedIDList(serviceType ServiceType) (string, error) {
-	return self.RequestProduct(PathGetCIDList, serviceType, nil)
+func (self *Codef) GetConnectedIDList(serviceType ServiceType, param map[string]interface{}) (string, error) {
+	return self.RequestProduct(PathGetCIDList, serviceType, param)
 }
 
 // 토큰 발급
