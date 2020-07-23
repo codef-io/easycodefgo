@@ -172,6 +172,8 @@ func main() {
 }
 ```
 
+계정 등록 이외의 계정 추가, 수정, 삭제 등의 계정 관리 기능과 계정 목록 조회, Connected ID 목록 조회 등 조회 기능은 `easycodefgo-exam`에서 확인 할 수 있습니다.
+
 인증서로 계정을 등록하는 경우에는 cert파일, key파일 세트 혹은 pfx파일 2가지 모두를 지원합니다. [개발가이드 계정등록](https://developer.codef.io/cert/account/create)에서 자세한 내용을 확인하세요. 인증서 내보내기/가져오기 등 인증서 릴레이 서버 기능이 필요한 경우 <support@codef.io>로 문의해주시기 바랍니다. 코드에프에서는 계정 관리를 위한 인증서 팝업과 전송 서버를 서비스 하고 있습니다.
 
 ![코드에프 인증서 릴레이 서비스](http://download.codef.io/codef-relay-server01.png)
@@ -437,6 +439,19 @@ func main() {
 > **샌드박스 서버를 통해 추가인증 상품에 대한 테스트를 진행 할 수는 없습니다.**
 
 추가 인증에 필요한 파라미터 설명은 개발 가이드의 각 상품  페이지에서 확인할 수 있으며 자세한 내용은 [개발가이드 추가인증](https://developer.codef.io/dic#menu-2)을 통해 확인하세요.
+
+## 요청 타입
+코드에프 요청시 샌드박스 외 다른 타입으로 요청을 보내실 경우 아래 타입을 사용할 수 있습니다.
+
+```go
+type ServiceType int // 코드에프 이용 서비스 타입 정보
+
+const (
+	TypeProduct ServiceType = iota // 정식버전
+	TypeDemo                       // 데모 버전
+	TypeSandbox                    // 샌드박스
+)
+```
 
 # Ask us
 
