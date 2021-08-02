@@ -176,11 +176,6 @@ func (self *Codef) RequestToken(serviceType ServiceType) (string, error) {
 	}
 }
 
-
-func convertToString(tokenMap map[string]interface{}) (string){
-	return tokenMap["access_token"].(string)
-}
-
 // 클라이언트 시크릿 반환
 func (self *Codef) getClientSecret(serviceType ServiceType) string {
 	switch serviceType {
