@@ -157,16 +157,29 @@ func (self *Codef) RequestToken(serviceType ServiceType) (string, error) {
 	switch serviceType {
 	case TypeProduct:
 		token, err := requestToken(self.clientID, self.clientSecret)
-		return convertToString(token), err
+		if err != nil {
+			return "", err
+		}
+		return token["access_token"].(string), err
 	case TypeDemo:
 		token, err := requestToken(self.demoClientID, self.demoClientSecret)
-		return convertToString(token), err
+		if err != nil {
+			return "", err
+		}
+		return token["access_token"].(string), err
 	default:
 		token, err := requestToken(SandboxClientID, SandboxClientSecret)
-		return convertToString(token), err
+		if err != nil {
+			return "", err
+		}
+		return token["access_token"].(string), err
 	}
 }
 
+
+func convertToString(tokenMap map[string]interface{}) (string){
+	return tokenMap["access_token"].(string)
+}
 
 // 클라이언트 시크릿 반환
 func (self *Codef) getClientSecret(serviceType ServiceType) string {
@@ -270,8 +283,4 @@ func checkNeedValueInTwoWayInfo(twoWayInfo map[string]interface{}) bool {
 		return false
 	}
 	return true
-}
-
-func convertToString(tokenMap map[string]interface{}) (string){
-	return tokenMap["access_token"].(string)
 }
