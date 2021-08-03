@@ -211,8 +211,7 @@ func TestSetAccessToken(t *testing.T) {
 	ast := assert.New(t)
 
 	codef := &Codef{}
-	res, _ := codef.RequestToken(TypeSandbox)
-	token := res["access_token"].(string)
+	token, _ := codef.RequestToken(TypeSandbox)
 	ast.NotEmpty(token)
 
 	codef.SetAccessToken(token, TypeSandbox)
