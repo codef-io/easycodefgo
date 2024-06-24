@@ -149,18 +149,30 @@ func (self *Codef) GetConnectedIDList(serviceType ServiceType, param map[string]
 }
 
 // 토큰 발급
-func (self *Codef) RequestToken(serviceType ServiceType) (map[string]interface{}, error) {
+func (self *Codef) RequestToken(serviceType ServiceType) (string, error) {
 	existClientInfo := self.checkClientInfo(serviceType)
 	if !existClientInfo {
-		return nil, errors.New("The ClientID and ClientSecret values ​​are empty. Please set the value according to the service type.")
+		return "", errors.New("The ClientID and ClientSecret values ​​are empty. Please set the value according to the service type.")
 	}
 	switch serviceType {
 	case TypeProduct:
-		return requestToken(self.clientID, self.clientSecret)
+		token, err := requestToken(self.clientID, self.clientSecret)
+		if err != nil {
+			return "", err
+		}
+		return token["access_token"].(string), err
 	case TypeDemo:
-		return requestToken(self.demoClientID, self.demoClientSecret)
+		token, err := requestToken(self.demoClientID, self.demoClientSecret)
+		if err != nil {
+			return "", err
+		}
+		return token["access_token"].(string), err
 	default:
-		return requestToken(SandboxClientID, SandboxClientSecret)
+		token, err := requestToken(SandboxClientID, SandboxClientSecret)
+		if err != nil {
+			return "", err
+		}
+		return token["access_token"].(string), err
 	}
 }
 
